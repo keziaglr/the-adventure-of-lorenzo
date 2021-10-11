@@ -66,11 +66,13 @@ public class ControllerCharacter : MonoBehaviour
         {
             float targetAngle = Mathf.Atan2(direction.x, direction.z) * Mathf.Rad2Deg + cam.eulerAngles.y;
             float angle = Mathf.SmoothDampAngle(transform.eulerAngles.y, targetAngle, ref turnSmoothVelocity, turnSmoothTime);
-            transform.rotation = Quaternion.Euler(0f, angle, 0f);
+            if (!PauseMenu.ShootingMode)
+            {
+                transform.rotation = Quaternion.Euler(0f, angle, 0f);
+            }
 
             speed = 6f;
             moveDirection = Quaternion.Euler(0f, targetAngle, 0f) * Vector3.forward;
-            //Debug.Log(speed);
             controller.Move(moveDirection.normalized * speed * Time.deltaTime);
             animator.SetFloat("move", 1f * direction.magnitude, turnSmoothTime, Time.deltaTime);
         }
