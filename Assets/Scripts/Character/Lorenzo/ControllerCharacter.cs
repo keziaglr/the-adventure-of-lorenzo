@@ -44,12 +44,15 @@ public class ControllerCharacter : MonoBehaviour
     Vector3 moveDirection;
 
     Camera cams;
+    RaycastWeapon weapon;
 
     void Start()
     {
         animator = GetComponent<Animator>();
         cams = Camera.main;
-
+        Cursor.visible = false;
+        Cursor.lockState = CursorLockMode.Locked;
+        weapon = GetComponentInChildren<RaycastWeapon>();
     }
 
     // Update is called once per frame
@@ -95,5 +98,13 @@ public class ControllerCharacter : MonoBehaviour
         gravityVector.y = verticalV;
         controller.Move(gravityVector * Time.deltaTime);
 
+        if (Input.GetButtonDown("Fire1"))
+        {
+            weapon.StartFiring();
+        }
+        if (Input.GetButtonUp("Fire1"))
+        {
+            weapon.StopFiring();
+        }
     }
 }
