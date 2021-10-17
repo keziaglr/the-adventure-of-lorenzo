@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Animations.Rigging;
 
 public class ControllerCharacter : MonoBehaviour
 {
@@ -39,12 +40,14 @@ public class ControllerCharacter : MonoBehaviour
     public float turnSmoothVelocity;
     public float jumpHigh = 5f;
     public float verticalV;
+    public float aimDuration = 0.3f;
 
     public float sprintSpeed = 15f;
     Vector3 moveDirection;
 
     Camera cams;
     RaycastWeapon weapon;
+    public Rig aimLayer;
 
     void Start()
     {
@@ -110,6 +113,16 @@ public class ControllerCharacter : MonoBehaviour
         if (Input.GetButtonUp("Fire1"))
         {
             weapon.StopFiring();
+        }
+
+        //WeaponAiming
+        if (Input.GetMouseButton(1))
+        {
+            aimLayer.weight += Time.deltaTime / aimDuration;
+        }
+        else
+        {
+            aimLayer.weight -= Time.deltaTime / aimDuration;
         }
     }
 }
