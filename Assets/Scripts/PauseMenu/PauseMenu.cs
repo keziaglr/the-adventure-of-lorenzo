@@ -6,9 +6,9 @@ using UnityEngine.SceneManagement;
 public class PauseMenu : MonoBehaviour
 {
     public static bool GameIsPaused = false;
-    public static bool ShootingMode = false;
+    
 
-    public GameObject pauseMenuUI, mainCam, shootingCam;
+    public GameObject pauseMenuUI;
 
     // Update is called once per frame
     void Update()
@@ -25,21 +25,7 @@ public class PauseMenu : MonoBehaviour
             }
         }
 
-        if (Input.GetKeyDown(KeyCode.C))
-        {
-            if (ShootingMode)
-            {
-                mainCam.SetActive(true);
-                shootingCam.SetActive(false);
-                ShootingMode = false;
-            }
-            else
-            {
-                mainCam.SetActive(false);
-                shootingCam.SetActive(true);
-                ShootingMode = true;
-            }
-        }
+
     }
 
     public void Resume()

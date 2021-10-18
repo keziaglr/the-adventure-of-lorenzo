@@ -29,7 +29,7 @@ public class EnemyAi : MonoBehaviour
 
     private void Awake()
     {
-        player = GameObject.Find("PlayerObj").transform;
+        player = GameObject.Find("Robot Kyle").transform;
         agent = GetComponent<NavMeshAgent>();
     }
 

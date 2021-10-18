@@ -31,6 +31,8 @@ public class ControllerCharacter : MonoBehaviour
     //}
 
     public CharacterController controller;
+    public GameObject mainCam, shootingCam;
+    public static bool ShootingMode = false;
     public Transform cam;
     public float speed = 6f;
     private Animator animator = null;
@@ -72,7 +74,7 @@ public class ControllerCharacter : MonoBehaviour
         {
             float targetAngle = Mathf.Atan2(direction.x, direction.z) * Mathf.Rad2Deg + cam.eulerAngles.y;
             float angle = Mathf.SmoothDampAngle(transform.eulerAngles.y, targetAngle, ref turnSmoothVelocity, turnSmoothTime);
-            if (!PauseMenu.ShootingMode)
+            if (!ShootingMode)
             {
                 transform.rotation = Quaternion.Euler(0f, angle, 0f);
             }
@@ -101,28 +103,73 @@ public class ControllerCharacter : MonoBehaviour
         gravityVector.y = verticalV;
         controller.Move(gravityVector * Time.deltaTime);
 
-        if (Input.GetButtonDown("Fire1"))
+        if (ShootingMode)
         {
-            weapon.StartFiring();
-        }
-        if (weapon.isFiring)
-        {
-            weapon.UpdateFiring(Time.deltaTime);
-        }
-        weapon.UpdateBullets(Time.deltaTime);
-        if (Input.GetButtonUp("Fire1"))
-        {
-            weapon.StopFiring();
+            if (Input.GetButtonDown("Fire1"))
+            {
+                weapon.StartFiring();
+            }
+            if (weapon.isFiring)
+            {
+                weapon.UpdateFiring(Time.deltaTime);
+            }
+            weapon.UpdateBullets(Time.deltaTime);
+            if (Input.GetButtonUp("Fire1"))
+            {
+                weapon.StopFiring();
+            }
         }
 
         //WeaponAiming
-        if (Input.GetMouseButton(1))
+        if (aimLayer)
         {
+            if (Input.GetMouseButton(1))
+            {
+                //aimLayer.weight += Time.deltaTime / aimDuration;
+            }
+            //else
+            //{
+            //    aimLayer.weight += Time.deltaTime / aimDuration;
+            //}
+        }
+
+        if (Input.GetKeyDown(KeyCode.C))
+        {
+            if (ShootingMode)
+            {
+                mainCam.SetActive(true);
+                shootingCam.SetActive(false);
+                ShootingMode = false;
+                StartCoroutine(Put());
+            }
+            else
+            {
+                mainCam.SetActive(false);
+                shootingCam.SetActive(true);
+                ShootingMode = true;
+                StartCoroutine(Shoot());
+            }
+        }
+    }
+
+    IEnumerator Shoot()
+    {
+        while(aimLayer.weight < 1)
+        {
+            yield return null;
             aimLayer.weight += Time.deltaTime / aimDuration;
         }
-        else
+        yield return null;
+    }
+
+    IEnumerator Put()
+    {
+        while (aimLayer.weight > 0)
         {
+            yield return null;
             aimLayer.weight -= Time.deltaTime / aimDuration;
         }
+        yield return null;
+
     }
 }
