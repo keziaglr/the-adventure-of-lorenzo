@@ -4,25 +4,41 @@ using UnityEngine;
 
 public class DoorController : MonoBehaviour
 {
-    Animator doorAnimator;
-    private void OnTriggerEnter(Collider other)
+    public GameObject character;
+    private Animator animator;
+    private List<Animator> childAnimatorList = new List<Animator>();
+
+
+    // Start is called before the first frame update
+    private void Start()
     {
-        if (other.tag.Equals("Player"))
+        animator = GetComponent<Animator>();
+        GameObject child = transform.GetChild(0).gameObject;
+        for (int i = 0; i < child.transform.childCount; i++)
         {
-            doorAnimator.SetBool("character_nearby", true);
+            childAnimatorList.Add(child.transform.GetChild(i).GetComponent<Animator>());
         }
     }
 
-    private void OnTriggerExit(Collider other)
+    // Update is called once per frame
+    void Update()
     {
-        if (other.tag.Equals("Player"))
+        if (Vector3.Distance(character.transform.position, transform.position) <= 1f)
         {
-            doorAnimator.SetBool("character_nearby", false);
+            animator.SetBool("character_nearby", true);
+            foreach (Animator a in childAnimatorList)
+            {
+                a.SetBool("isOpening", true);
+            }
         }
-    }
+        else
+        {
+            animator.SetBool("character_nearby", false);
+            foreach (Animator a in childAnimatorList)
+            {
+                a.SetBool("isOpening", false);
+            }
+        }
 
-    void Start()
-    {
-        doorAnimator = GetComponent<Animator>();
     }
 }
