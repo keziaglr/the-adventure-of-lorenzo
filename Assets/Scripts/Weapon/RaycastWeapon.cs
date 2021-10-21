@@ -23,6 +23,7 @@ public class RaycastWeapon : MonoBehaviour
     public Transform raycastOrigin;
     public Transform raycastDestination;
 
+    EnemyAi enemy;
     Ray ray;
     RaycastHit hitInfo;
     float accumulatedTime;
@@ -90,6 +91,13 @@ public class RaycastWeapon : MonoBehaviour
 
             bullet.tracer.transform.position = hitInfo.point;
             bullet.time = maxLifetime;
+
+            if (hitInfo.collider.gameObject.tag.Equals("Enemy"))
+            {
+                enemy = hitInfo.collider.gameObject.GetComponent<EnemyAi>();
+                enemy.TakeDamage(10);
+                Debug.Log(enemy.currentHealth);
+            }
         }
         else
         {

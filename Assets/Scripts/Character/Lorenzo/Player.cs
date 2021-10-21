@@ -4,9 +4,10 @@ using UnityEngine;
 
 public class Player : MonoBehaviour
 {
-    public int maxHealth = 100;
+    public int maxHealth = 1000;
     public int currentHealth;
     public HealthBar healthBar;
+    Inventory inventory;
     // Start is called before the first frame update
     void Start()
     {
@@ -26,5 +27,35 @@ public class Player : MonoBehaviour
     {
         currentHealth -= damage;
         healthBar.SetHealth(currentHealth);
+    }
+
+    public void useAmmo()
+    {
+
+    }
+
+    public void useHealthPotion()
+    {
+        currentHealth += 200;
+    }
+
+    public void useSkillPotion()
+    {
+
+    }
+
+    public void useShield()
+    {
+
+    }
+
+    public void usePainKiller()
+    {
+
+    }
+
+    public void useDamageMultiplier()
+    {
+
     }
 }

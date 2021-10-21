@@ -51,6 +51,10 @@ public class ControllerCharacter : MonoBehaviour
     RaycastWeapon weapon;
     public Rig aimLayer;
 
+    private int coreItems = 0;
+    public Inventory inventory;
+
+
     void Start()
     {
         animator = GetComponent<Animator>();
@@ -171,5 +175,22 @@ public class ControllerCharacter : MonoBehaviour
         }
         yield return null;
 
+    }
+
+    void OnControllerColliderHit(ControllerColliderHit hit)
+    {
+        GameObject item = hit.gameObject;
+        if (item.tag.Equals("Item"))
+        {
+            if (item.name.Contains("CoreItem"))
+            {
+                coreItems++;
+            }
+            else
+            {
+                inventory.AddItem(item.name);
+            }
+            Destroy(item);
+        }
     }
 }
