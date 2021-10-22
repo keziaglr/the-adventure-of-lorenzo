@@ -119,6 +119,7 @@ public class EnemyAi : MonoBehaviour
                 lorenzo = hitInfo.collider.gameObject.GetComponent<Player>();
                 lorenzo.TakeDamage(15);
                 //Debug.Log("Player attacked");
+
             }
 
             alreadyAttacked = true;
