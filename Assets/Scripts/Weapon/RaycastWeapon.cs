@@ -22,6 +22,7 @@ public class RaycastWeapon : MonoBehaviour
     public TrailRenderer tracerEffect;
     public Transform raycastOrigin;
     public Transform raycastDestination;
+    
 
     EnemyAi enemy;
     Ray ray;
@@ -96,8 +97,9 @@ public class RaycastWeapon : MonoBehaviour
             {
                 enemy = hitInfo.collider.gameObject.GetComponent<EnemyAi>();
                 enemy.TakeDamage(10);
-                Debug.Log(enemy.currentHealth);
+                Debug.Log(enemy.name);
             }
+            Debug.Log(hitInfo.collider.gameObject.tag);
         }
         else
         {

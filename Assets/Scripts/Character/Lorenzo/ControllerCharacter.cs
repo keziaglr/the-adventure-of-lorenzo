@@ -2,6 +2,8 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Animations.Rigging;
+using System;
+using UnityEngine.UI;
 
 public class ControllerCharacter : MonoBehaviour
 {
@@ -50,8 +52,8 @@ public class ControllerCharacter : MonoBehaviour
     Camera cams;
     RaycastWeapon weapon;
     public Rig aimLayer;
+    public int coreItems;
 
-    private int coreItems = 0;
     public Inventory inventory;
 
 
@@ -72,6 +74,7 @@ public class ControllerCharacter : MonoBehaviour
         float vertical = Input.GetAxisRaw("Vertical");
         Vector3 direction = new Vector3(horizontal, 0f, vertical).normalized;
         Vector3 gravityVector = Vector3.zero;
+
 
 
         if (direction.magnitude >= 0.1f)
@@ -185,6 +188,7 @@ public class ControllerCharacter : MonoBehaviour
             if (item.name.Contains("CoreItem"))
             {
                 coreItems++;
+                Debug.Log(coreItems);
             }
             else
             {
