@@ -9,7 +9,7 @@ public class Player : MonoBehaviour
     public HealthBar healthBar;
     Inventory inventory;
     PauseMenu pm;
-    GameObject deathMenuUI;
+    public GameObject deathMenuUI, gameUI;
     // Start is called before the first frame update
     void Start()
     {
@@ -21,15 +21,15 @@ public class Player : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (Input.GetKeyDown(KeyCode.Space)){
-            TakeDamage(20);
-        }
         if (currentHealth <= 0) Invoke(nameof(DestroyPlayer), 0.5f);
     }
     private void DestroyPlayer()
     {
         //Destroy(gameObject);
         deathMenuUI.SetActive(true);
+        gameUI.SetActive(false);
+        Cursor.visible = true;
+        Cursor.lockState = CursorLockMode.None;
         //pm.Death();
     }
 

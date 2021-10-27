@@ -5,54 +5,86 @@ using UnityEngine.UI;
 
 public class DialogueManager : MonoBehaviour
 {
-    public Text nameText;
-    public Text dialogueText;
 
-    public Queue<string> sentences;
-    // Start is called before the first frame update
-    void Start()
-    {
-        sentences = new Queue<string>();
-    }
+	public Text nameText;
+	public Text dialogueText;
+	public GameObject gameUI, dialogueUI, thirdpersoncam, maincam;
+	public static bool dialogueActive = true;
 
-    public void StartDialogue(Dialogue dialogue)
-    {
-        sentences.Clear();
-        nameText.text = dialogue.name;
+	public Animator animator;
 
-        foreach(string sentence in dialogue.sentences)
-        {
-            sentences.Enqueue(sentence);
+	private Queue<string> sentences;
 
+	// Use this for initialization
+	void Start()
+	{
+		Cursor.visible = true;
+		Cursor.lockState = CursorLockMode.None;
+		sentences = new Queue<string>();
+	}
+
+	public void StartDialogue(Dialogue dialogue)
+	{
+		//Debug.Log("STart Dialogue " + PauseMenu.IsRestart);
+        if (!PauseMenu.IsRestart) 
+		{ 		
+			animator.SetBool("IsOpen", true);
+
+			nameText.text = dialogue.name;
+
+			sentences.Clear();
+
+			foreach (string sentence in dialogue.sentences)
+			{
+				sentences.Enqueue(sentence);
+			}
+
+			DisplayNextSentence();
         }
-            DisplayNextSentence();
-    }
-
-    public void DisplayNextSentence()
-    {
-        if(sentences.Count == 0)
+        else
         {
-            EndDialogue();
-            return;
+			GameInit();
         }
+	}
 
-        string sentence = sentences.Dequeue();
-        StopAllCoroutines();
-        StartCoroutine(TypeSentence(sentence));
-    }
+	public void DisplayNextSentence()
+	{
+		if (sentences.Count == 0)
+		{
+			EndDialogue();
+			return;
+		}
 
-    IEnumerator TypeSentence(string sentence)
+		string sentence = sentences.Dequeue();
+		StopAllCoroutines();
+		StartCoroutine(TypeSentence(sentence));
+	}
+
+	IEnumerator TypeSentence(string sentence)
+	{
+		dialogueText.text = "";
+		foreach (char letter in sentence.ToCharArray())
+		{
+			dialogueText.text += letter;
+			yield return null;
+		}
+	}
+
+	void EndDialogue()
+	{
+		animator.SetBool("IsOpen", false);
+		GameInit();
+	}
+
+	void GameInit()
     {
-        dialogueText.text = "";
-        foreach(char letter in sentence.ToCharArray())
-        {
-            dialogueText.text += letter;
-            yield return null;
-        }
-    }
+		Cursor.visible = false;
+		Cursor.lockState = CursorLockMode.Locked;
+		maincam.SetActive(false);
+		thirdpersoncam.SetActive(true);
+		dialogueUI.SetActive(false);
+		gameUI.SetActive(true);
+		dialogueActive = false;
+	}
 
-    void EndDialogue()
-    {
-        
-    }
 }

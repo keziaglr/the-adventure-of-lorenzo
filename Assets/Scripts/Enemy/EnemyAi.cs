@@ -220,7 +220,7 @@ public class EnemyAi : MonoBehaviour
                 enemy.TakeDamage(10);
                 Debug.Log(enemy.name);
             }
-            Debug.Log(hitInfo.collider.gameObject.tag);
+            //Debug.Log(hitInfo.collider.gameObject.tag);
 
             if(bullet.tracer != null)
             {

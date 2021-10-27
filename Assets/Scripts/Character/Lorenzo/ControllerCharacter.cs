@@ -69,93 +69,96 @@ public class ControllerCharacter : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-
-        float horizontal = Input.GetAxisRaw("Horizontal");
-        float vertical = Input.GetAxisRaw("Vertical");
-        Vector3 direction = new Vector3(horizontal, 0f, vertical).normalized;
-        Vector3 gravityVector = Vector3.zero;
-
-
-
-        if (direction.magnitude >= 0.1f)
+        if(DialogueManager.dialogueActive == false)
         {
-            float targetAngle = Mathf.Atan2(direction.x, direction.z) * Mathf.Rad2Deg + cam.eulerAngles.y;
-            float angle = Mathf.SmoothDampAngle(transform.eulerAngles.y, targetAngle, ref turnSmoothVelocity, turnSmoothTime);
-            if (!ShootingMode)
+            float horizontal = Input.GetAxisRaw("Horizontal");
+            float vertical = Input.GetAxisRaw("Vertical");
+            Vector3 direction = new Vector3(horizontal, 0f, vertical).normalized;
+            Vector3 gravityVector = Vector3.zero;
+
+
+
+            if (direction.magnitude >= 0.1f)
             {
-                transform.rotation = Quaternion.Euler(0f, angle, 0f);
-            }
+                float targetAngle = Mathf.Atan2(direction.x, direction.z) * Mathf.Rad2Deg + cam.eulerAngles.y;
+                float angle = Mathf.SmoothDampAngle(transform.eulerAngles.y, targetAngle, ref turnSmoothVelocity, turnSmoothTime);
+                if (!ShootingMode)
+                {
+                    transform.rotation = Quaternion.Euler(0f, angle, 0f);
+                }
 
-            speed = 6f;
-            moveDirection = Quaternion.Euler(0f, targetAngle, 0f) * Vector3.forward;
-            controller.Move(moveDirection.normalized * speed * Time.deltaTime);
-            animator.SetFloat("move", 1f * direction.magnitude, turnSmoothTime, Time.deltaTime);
-        }
-        else
-        {
-            animator.SetFloat("move", 0f * direction.magnitude, turnSmoothTime, Time.deltaTime);
-        }
-
-
-        if (controller.isGrounded)
-        {
-            verticalV = -gravity * Time.deltaTime;
-        }
-        else
-        {
-            verticalV -= gravity * Time.deltaTime;
-
-        }
-
-        gravityVector.y = verticalV;
-        controller.Move(gravityVector * Time.deltaTime);
-
-        if (ShootingMode)
-        {
-            if (Input.GetButtonDown("Fire1"))
-            {
-                weapon.StartFiring();
-            }
-            if (weapon.isFiring)
-            {
-                weapon.UpdateFiring(Time.deltaTime);
-            }
-            weapon.UpdateBullets(Time.deltaTime);
-            if (Input.GetButtonUp("Fire1"))
-            {
-                weapon.StopFiring();
-            }
-        }
-
-        //WeaponAiming
-        if (aimLayer)
-        {
-            if (Input.GetMouseButton(1))
-            {
-                //aimLayer.weight += Time.deltaTime / aimDuration;
-            }
-            //else
-            //{
-            //    aimLayer.weight += Time.deltaTime / aimDuration;
-            //}
-        }
-
-        if (Input.GetKeyDown(KeyCode.C))
-        {
-            if (ShootingMode)
-            {
-                mainCam.SetActive(true);
-                shootingCam.SetActive(false);
-                ShootingMode = false;
-                StartCoroutine(Put());
+                speed = 6f;
+                moveDirection = Quaternion.Euler(0f, targetAngle, 0f) * Vector3.forward;
+                controller.Move(moveDirection.normalized * speed * Time.deltaTime);
+                animator.SetFloat("move", 1f * direction.magnitude, turnSmoothTime, Time.deltaTime);
             }
             else
             {
-                mainCam.SetActive(false);
-                shootingCam.SetActive(true);
-                ShootingMode = true;
-                StartCoroutine(Shoot());
+                animator.SetFloat("move", 0f * direction.magnitude, turnSmoothTime, Time.deltaTime);
             }
+
+
+            if (controller.isGrounded)
+            {
+                verticalV = -gravity * Time.deltaTime;
+            }
+            else
+            {
+                verticalV -= gravity * Time.deltaTime;
+
+            }
+
+            gravityVector.y = verticalV;
+            controller.Move(gravityVector * Time.deltaTime);
+
+            if (ShootingMode)
+            {
+                if (Input.GetButtonDown("Fire1"))
+                {
+                    weapon.StartFiring();
+                }
+                if (weapon.isFiring)
+                {
+                    weapon.UpdateFiring(Time.deltaTime);
+                }
+                weapon.UpdateBullets(Time.deltaTime);
+                if (Input.GetButtonUp("Fire1"))
+                {
+                    weapon.StopFiring();
+                }
+            }
+
+            //WeaponAiming
+            if (aimLayer)
+            {
+                if (Input.GetMouseButton(1))
+                {
+                    //aimLayer.weight += Time.deltaTime / aimDuration;
+                }
+                //else
+                //{
+                //    aimLayer.weight += Time.deltaTime / aimDuration;
+                //}
+            }
+
+            if (Input.GetKeyDown(KeyCode.C))
+            {
+                if (ShootingMode)
+                {
+                    mainCam.SetActive(true);
+                    shootingCam.SetActive(false);
+                    ShootingMode = false;
+                    StartCoroutine(Put());
+                }
+                else
+                {
+                    mainCam.SetActive(false);
+                    shootingCam.SetActive(true);
+                    ShootingMode = true;
+                    StartCoroutine(Shoot());
+                }
+            }
+
         }
     }
 

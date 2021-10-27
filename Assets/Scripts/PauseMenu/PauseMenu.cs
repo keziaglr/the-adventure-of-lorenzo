@@ -6,9 +6,10 @@ using UnityEngine.SceneManagement;
 public class PauseMenu : MonoBehaviour
 {
     public static bool GameIsPaused = false;
+    public static bool IsRestart = false;
     
 
-    public GameObject pauseMenuUI, deathMenuUI;
+    public GameObject pauseMenuUI, deathMenuUI, gameUI;
 
     // Update is called once per frame
     void Update()
@@ -28,8 +29,16 @@ public class PauseMenu : MonoBehaviour
 
     }
 
+    public void Restart()
+    {
+        SceneManager.LoadScene(1);
+        IsRestart = true;
+        //Debug.Log("Pause Menu " + IsRestart);
+    }
+
     public void Resume()
     {
+        gameUI.SetActive(true);
         pauseMenuUI.SetActive(false);
         Time.timeScale = 1f;
         GameIsPaused = false;
@@ -37,6 +46,9 @@ public class PauseMenu : MonoBehaviour
 
     public void Pause()
     {
+        Cursor.visible = true;
+        Cursor.lockState = CursorLockMode.None;
+        gameUI.SetActive(false);
         pauseMenuUI.SetActive(true);
         Time.timeScale = 0f;
         GameIsPaused = true;
