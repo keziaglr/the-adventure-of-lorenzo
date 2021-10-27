@@ -8,7 +8,6 @@ public class DoorController : MonoBehaviour
     private Animator animator;
     private List<Animator> childAnimatorList = new List<Animator>();
 
-
     // Start is called before the first frame update
     private void Start()
     {
@@ -23,7 +22,7 @@ public class DoorController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (Vector3.Distance(character.transform.position, transform.position) <= 1f)
+        if (Vector3.Distance(character.transform.position, transform.position) <= 1f && ControllerCharacter.coreItems >= 9)
         {
             animator.SetBool("character_nearby", true);
             foreach (Animator a in childAnimatorList)

@@ -36,6 +36,7 @@ public class EnemyAi : MonoBehaviour
     public int maxHealth = 250;
     public int currentHealth;
     public HealthBar healthBar;
+    public GameObject coreItem;
 
 
     public ActiveWeapon.WeaponSlot weaponSlot;
@@ -45,6 +46,7 @@ public class EnemyAi : MonoBehaviour
     public ParticleSystem[] muzzleFlash;
     public ParticleSystem hitEffect;
     public Transform raycastDestination;
+    public int patrolIndex;
     Player lorenzo;
 
 
@@ -72,6 +74,7 @@ public class EnemyAi : MonoBehaviour
         //Patroling();
         if (!playerInSightRange && !playerInAttackRange)
         {
+            //Debug.Log("Patrolling");
             Patroling();
         }
         if (playerInAttackRange && playerInSightRange)
@@ -80,17 +83,19 @@ public class EnemyAi : MonoBehaviour
         }
         UpdateBullets(Time.deltaTime);
     }
-    Vector3 dest, start, end;
+    public Vector3 dest, start, end;
     private void Patroling()
     {
-        agent.SetDestination(dest);
 
         //Debug.Log(agent.name + " : " +  agent.remainingDistance);
         if (agent.remainingDistance <= 0)
         {
             //Debug.Log(agent.name);
+            //Debug.Log(dest);
             dest = (dest == start) ? end : start;
         }
+        transform.LookAt(dest);
+        agent.SetDestination(dest);
 
         //Vector3 distanceToWalkPoint = transform.position - walkPoint;
 
@@ -141,6 +146,8 @@ public class EnemyAi : MonoBehaviour
     }
     private void DestroyEnemy()
     {
+        coreItem.SetActive(true);
+        Debug.Log("Destroy Enemy");
         Destroy(gameObject);
     }
 

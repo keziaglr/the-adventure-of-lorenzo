@@ -7,9 +7,10 @@ public class Player : MonoBehaviour
     public int maxHealth = 1000;
     public int currentHealth;
     public HealthBar healthBar;
+    public static bool IsAlive = true;
     Inventory inventory;
     PauseMenu pm;
-    public GameObject deathMenuUI, gameUI;
+    public GameObject deathMenuUI, gameUI, audioMain, audioDeath;
     // Start is called before the first frame update
     void Start()
     {
@@ -30,6 +31,9 @@ public class Player : MonoBehaviour
         gameUI.SetActive(false);
         Cursor.visible = true;
         Cursor.lockState = CursorLockMode.None;
+        IsAlive = false;
+        audioMain.SetActive(false);
+        audioDeath.SetActive(true);
         //pm.Death();
     }
 

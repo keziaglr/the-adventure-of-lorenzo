@@ -34,10 +34,12 @@ public class ControllerCharacter : MonoBehaviour
 
     public CharacterController controller;
     public GameObject mainCam, shootingCam;
+    public Text coreItemText, bulletCountText;
     public static bool ShootingMode = false;
     public Transform cam;
     public float speed = 6f;
     private Animator animator = null;
+    private int bulletCount = 150;
 
     public float gravity = 14f;
     public float turnSmoothTime = 0.1f;
@@ -52,7 +54,7 @@ public class ControllerCharacter : MonoBehaviour
     Camera cams;
     RaycastWeapon weapon;
     public Rig aimLayer;
-    public int coreItems;
+    public static int coreItems;
 
     public Inventory inventory;
 
@@ -69,7 +71,13 @@ public class ControllerCharacter : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if(DialogueManager.dialogueActive == false)
+        //Debug.Log(DialogueManager.dialogueActive == false && Player.IsAlive == true);
+        //Debug.Log("Dialogue Active : " + DialogueManager.dialogueActive);
+        //Debug.Log("Player Active : " + Player.IsAlive);
+
+        coreItemText.text = coreItems.ToString();
+        bulletCountText.text = bulletCount.ToString();
+        if (DialogueManager.dialogueActive == false)
         {
             float horizontal = Input.GetAxisRaw("Horizontal");
             float vertical = Input.GetAxisRaw("Vertical");
@@ -113,8 +121,9 @@ public class ControllerCharacter : MonoBehaviour
 
             if (ShootingMode)
             {
-                if (Input.GetButtonDown("Fire1"))
+                if (Input.GetButtonDown("Fire1") && bulletCount > 0)
                 {
+                    bulletCount--;
                     weapon.StartFiring();
                 }
                 if (weapon.isFiring)
@@ -129,17 +138,6 @@ public class ControllerCharacter : MonoBehaviour
             }
 
             //WeaponAiming
-            if (aimLayer)
-            {
-                if (Input.GetMouseButton(1))
-                {
-                    //aimLayer.weight += Time.deltaTime / aimDuration;
-                }
-                //else
-                //{
-                //    aimLayer.weight += Time.deltaTime / aimDuration;
-                //}
-            }
 
             if (Input.GetKeyDown(KeyCode.C))
             {
