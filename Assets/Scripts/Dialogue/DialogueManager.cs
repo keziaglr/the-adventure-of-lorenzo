@@ -10,6 +10,7 @@ public class DialogueManager : MonoBehaviour
 	public Text dialogueText;
 	public GameObject gameUI, dialogueUI, thirdpersoncam, maincam;
 	public static bool dialogueActive = true;
+	public Text alertText;
 
 	public Animator animator;
 
@@ -85,6 +86,7 @@ public class DialogueManager : MonoBehaviour
 		dialogueUI.SetActive(false);
 		gameUI.SetActive(true);
 		dialogueActive = false;
+		alertText.text = "";
 	}
 
 }

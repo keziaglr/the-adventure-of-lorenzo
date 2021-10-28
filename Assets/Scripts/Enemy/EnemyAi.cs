@@ -36,7 +36,7 @@ public class EnemyAi : MonoBehaviour
     public int maxHealth = 250;
     public int currentHealth;
     public HealthBar healthBar;
-    public GameObject coreItem;
+    public GameObject coreItem, respawnPoint, enemyObject;
 
 
     public ActiveWeapon.WeaponSlot weaponSlot;
@@ -146,9 +146,13 @@ public class EnemyAi : MonoBehaviour
     }
     private void DestroyEnemy()
     {
-        coreItem.SetActive(true);
-        Debug.Log("Destroy Enemy");
+        Vector3 pos = transform.position;
+        //coreItem.SetActive(true);
+        //Debug.Log("Destroy Enemy");
         Destroy(gameObject);
+        //gen.cleanPatroliExist("Kyle", patrolIndex, 30);
+        Instantiate(coreItem, pos, Quaternion.identity);
+        Instantiate(enemyObject, respawnPoint.transform.position, Quaternion.identity);
     }
 
     private void OnDrawGizmosSelected()

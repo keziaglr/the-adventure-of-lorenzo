@@ -32,6 +32,7 @@ public class Player : MonoBehaviour
         Cursor.visible = true;
         Cursor.lockState = CursorLockMode.None;
         IsAlive = false;
+        ControllerCharacter.coreItems = 0;
         audioMain.SetActive(false);
         audioDeath.SetActive(true);
         //pm.Death();

@@ -1,12 +1,14 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class DoorController : MonoBehaviour
 {
     public GameObject character;
     private Animator animator;
     private List<Animator> childAnimatorList = new List<Animator>();
+    public Text alertTxt;
 
     // Start is called before the first frame update
     private void Start()
@@ -32,6 +34,10 @@ public class DoorController : MonoBehaviour
         }
         else
         {
+            //if(ControllerCharacter.coreItems < 9)
+            //{
+            //    alertTxt.text = "Not Enough Core Items";
+            //}
             animator.SetBool("character_nearby", false);
             foreach (Animator a in childAnimatorList)
             {
