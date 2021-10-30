@@ -33,9 +33,11 @@ public class ControllerCharacter : MonoBehaviour
     //}
 
     public CharacterController controller;
-    public GameObject mainCam, shootingCam;
+    public GameObject mainCam, shootingCam, aimingCamRight, aimingCamLeft, aimingCam;
     public Text coreItemText, bulletCountText;
     public static bool ShootingMode = false;
+    public static bool AimingMode = false;
+    private bool isRight = true;
     public Transform cam;
     public float speed = 6f;
     private Animator animator = null;
@@ -57,7 +59,7 @@ public class ControllerCharacter : MonoBehaviour
     public static int coreItems;
 
     public Inventory inventory;
-
+    int isAimingParam = Animator.StringToHash("isAiming");
 
     void Start()
     {
@@ -119,7 +121,7 @@ public class ControllerCharacter : MonoBehaviour
             gravityVector.y = verticalV;
             controller.Move(gravityVector * Time.deltaTime);
 
-            if (ShootingMode)
+            if (ShootingMode || AimingMode)
             {
                 if (Input.GetButtonDown("Fire1") && bulletCount > 0)
                 {
@@ -156,6 +158,57 @@ public class ControllerCharacter : MonoBehaviour
                     StartCoroutine(Shoot());
                 }
             }
+
+            if (Input.GetMouseButtonDown(1))
+            {
+                if (AimingMode)
+                {
+                    aimingCam.SetActive(false);
+                    shootingCam.SetActive(true);
+                    AimingMode = false;
+                    ShootingMode = true;
+                }
+                else if (ShootingMode)
+                {
+                    aimingCam.SetActive(true);
+                    if (isRight)
+                    {
+                        aimingCamRight.SetActive(true);
+                        aimingCamLeft.SetActive(false);
+                    }
+                    else
+                    {
+                        aimingCamLeft.SetActive(true);
+                        aimingCamRight.SetActive(false);
+                    }
+                    shootingCam.SetActive(false);
+                    AimingMode = true;
+                    ShootingMode = false;
+                }
+            }
+
+            if (AimingMode)
+            {
+                if (Input.GetKeyDown(KeyCode.Tab))
+                {
+                    Debug.Log("Tab & Right");
+                    if (isRight)
+                    {
+                        aimingCamRight.SetActive(false);
+                        aimingCamLeft.SetActive(true);
+                        isRight = false;
+                    }
+                    else
+                    {
+                        aimingCamRight.SetActive(true);
+                        aimingCamLeft.SetActive(false);
+                        isRight = true;
+                    }
+                }
+            }
+
+            //bool isAiming = Input.GetMouseButton(1);
+            //animator.SetBool(isAimingParam, isAiming);
 
         }
     }
