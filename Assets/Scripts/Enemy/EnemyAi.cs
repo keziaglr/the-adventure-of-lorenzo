@@ -48,7 +48,10 @@ public class EnemyAi : MonoBehaviour
     public Transform raycastDestination;
     public int patrolIndex;
     Player lorenzo;
+    public Animator animator;
+    public int shot = 0, currBullet = 0;
 
+    private bool isDead = false, isReload = false, coreItemActive = false;
 
     EnemyAi enemy;
     Ray ray;
@@ -58,11 +61,29 @@ public class EnemyAi : MonoBehaviour
 
     private void Start()
     {
+        animator.SetBool("isDeath", false);
         player = GameObject.Find("Ken").transform;
         agent = GetComponent<NavMeshAgent>();
         currentHealth = maxHealth;
         healthBar.SetMaxHealth(maxHealth);
+        Debug.Log(agent.name);
+        if (agent.name.Equals("Kyle"))
+        {
+            shot = 15;
+        }else if (agent.name.Equals("Warrior"))
+        {
+            shot = 20;
+        }
+        else if (agent.name.Equals("Drone"))
+        {
+            shot = 30;
+        }
+        else if (agent.name.Equals("Mech"))
+        {
+            shot = 20;
+        }
 
+        currBullet = shot;
         dest = start = points[0].transform.position;
         end = points[1].transform.position;
     }
@@ -72,17 +93,31 @@ public class EnemyAi : MonoBehaviour
         playerInSightRange = Physics.CheckSphere(transform.position, sightRange, whatIsPlayer);
         playerInAttackRange = Physics.CheckSphere(transform.position, attackRange, whatIsPlayer);
         //Patroling();
-        if (!playerInSightRange && !playerInAttackRange)
+        if (!playerInSightRange && !playerInAttackRange && !isDead && !isReload)
         {
-            //Debug.Log("Patrolling");
             Patroling();
         }
-        if (playerInAttackRange && playerInSightRange)
+        if (playerInAttackRange && playerInSightRange && !isDead && !isReload)
         {
             AttackPlayer();
         }
+
+        if(currBullet <= 0)
+        {
+            animator.SetBool("isReload", true);
+            currBullet += shot;
+            isReload = true;
+            Invoke(nameof(setReloadAnimation), 3f);
+        }
         UpdateBullets(Time.deltaTime);
     }
+
+    private void setReloadAnimation()
+    {
+        animator.SetBool("isReload", false);
+        isReload = false;
+    }
+
     public Vector3 dest, start, end;
     private void Patroling()
     {
@@ -90,8 +125,9 @@ public class EnemyAi : MonoBehaviour
         //Debug.Log(agent.name + " : " +  agent.remainingDistance);
         if (agent.remainingDistance <= 0)
         {
-            //Debug.Log(agent.name);
+            Debug.Log(agent.name);
             //Debug.Log(dest);
+
             dest = (dest == start) ? end : start;
         }
         transform.LookAt(dest);
@@ -118,6 +154,8 @@ public class EnemyAi : MonoBehaviour
             Vector3 velocity = (player.position - raycastOrigin.position).normalized * bulletSpeed;
             var bullet = CreateBullet(raycastOrigin.position, velocity);
             bullets.Add(bullet);
+            SoundManager.PlaySound("ShotSFX");
+            currBullet--;
 
             if (hitInfo.transform != null && hitInfo.transform.tag.Equals("Player"))
             {
@@ -141,18 +179,25 @@ public class EnemyAi : MonoBehaviour
     {
         currentHealth -= damage;
         healthBar.SetHealth(currentHealth);
+        //Debug.Log("Take damage");
 
-        if (currentHealth <= 0) Invoke(nameof(DestroyEnemy), 0.5f);
+        if (currentHealth <= 0) {
+            animator.SetBool("isDeath", true);
+            Invoke(nameof(DestroyEnemy), 3f);
+        }
     }
     private void DestroyEnemy()
     {
         Vector3 pos = transform.position;
         //coreItem.SetActive(true);
-        //Debug.Log("Destroy Enemy");
         Destroy(gameObject);
         //gen.cleanPatroliExist("Kyle", patrolIndex, 30);
-        Instantiate(coreItem, pos, Quaternion.identity);
-        Instantiate(enemyObject, respawnPoint.transform.position, Quaternion.identity);
+        if (!coreItemActive)
+        {
+            coreItemActive = true;
+            Instantiate(coreItem, pos, Quaternion.identity);
+        }
+        //Instantiate(enemyObject, respawnPoint.transform.position, Quaternion.identity);
     }
 
     private void OnDrawGizmosSelected()

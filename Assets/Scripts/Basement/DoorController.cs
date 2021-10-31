@@ -39,6 +39,7 @@ public class DoorController : MonoBehaviour
             //    alertTxt.text = "Not Enough Core Items";
             //}
             animator.SetBool("character_nearby", false);
+            SoundManager.PlaySound("DoorSFX");
             foreach (Animator a in childAnimatorList)
             {
                 a.SetBool("isOpening", false);

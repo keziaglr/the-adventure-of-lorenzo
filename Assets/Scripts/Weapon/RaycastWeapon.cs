@@ -94,11 +94,11 @@ public class RaycastWeapon : MonoBehaviour
             bullet.tracer.transform.position = hitInfo.point;
             bullet.time = maxLifetime;
 
-            if (hitInfo.collider.gameObject.tag.Equals("Enemy"))
+            if (hitInfo.collider.gameObject.tag.Equals("Enemy") && hitInfo.transform != null)
             {
                 enemy = hitInfo.collider.gameObject.GetComponent<EnemyAi>();
                 enemy.TakeDamage(10);
-                player.IncreaseSkill(5);
+                player.IncreaseSkill(10);
                 //Debug.Log(enemy.name);
             }
             //Debug.Log(hitInfo.collider.gameObject.tag);

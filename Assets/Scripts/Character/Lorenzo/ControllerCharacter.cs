@@ -50,6 +50,10 @@ public class ControllerCharacter : MonoBehaviour
     public float verticalV;
     public float aimDuration = 0.3f;
 
+    public int maxAmmo = 30;
+    private int currentAmmo = -1;
+    public float reloadTime = 1f;
+
     public float sprintSpeed = 15f;
     Vector3 moveDirection;
 
@@ -63,11 +67,18 @@ public class ControllerCharacter : MonoBehaviour
 
     void Start()
     {
+        //if(currentAmmo == -1) currentAmmo = maxAmmo;
         animator = GetComponent<Animator>();
         cams = Camera.main;
         Cursor.visible = false;
         Cursor.lockState = CursorLockMode.Locked;
         weapon = GetComponentInChildren<RaycastWeapon>();
+    }
+
+    public void Reload()
+    {
+        Debug.Log("Reloading..");
+        currentAmmo = maxAmmo;
     }
 
     // Update is called once per frame
@@ -76,7 +87,11 @@ public class ControllerCharacter : MonoBehaviour
         //Debug.Log(DialogueManager.dialogueActive == false && Player.IsAlive == true);
         //Debug.Log("Dialogue Active : " + DialogueManager.dialogueActive);
         //Debug.Log("Player Active : " + Player.IsAlive);
-
+        //if (currentAmmo <= 0)
+        //{
+        //    Reload();
+        //    return;
+        //}
         coreItemText.text = coreItems.ToString();
         bulletCountText.text = bulletCount.ToString();
         if (DialogueManager.dialogueActive == false)
@@ -125,7 +140,9 @@ public class ControllerCharacter : MonoBehaviour
             {
                 if (Input.GetButtonDown("Fire1") && bulletCount > 0)
                 {
+                    currentAmmo--;
                     bulletCount--;
+                    SoundManager.PlaySound("ShotSFX");
                     weapon.StartFiring();
                 }
                 if (weapon.isFiring)

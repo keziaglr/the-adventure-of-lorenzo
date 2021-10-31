@@ -7,7 +7,7 @@ public class Player : MonoBehaviour
     public int maxHealth = 1000;
     public int maxSkill = 200;
     public int currentHealth;
-    public static int currentSkill;
+    public static int currentSkill = 0;
     public HealthBar healthBar;
     public SkillBar skillBar;
     public static bool IsAlive = true;
@@ -24,7 +24,7 @@ public class Player : MonoBehaviour
     {
         currentHealth = maxHealth;
         healthBar.SetMaxHealth(maxHealth);
-        skillBar.SetMaxSkill(maxSkill);
+        skillBar.SetSkill(currentSkill);
     }
 
     // Update is called once per frame
@@ -35,7 +35,12 @@ public class Player : MonoBehaviour
 
         //cameraLookAt.eulerAngles = new Vector3(yAxis.Value, xAxis.Value, 0);
 
-        skillBar.SetSkill(currentSkill); 
+        //skillBar.SetSkill(currentSkill); 
+        if(Input.GetKeyDown(KeyCode.Space))
+        {
+            currentSkill++;
+            skillBar.SetSkill(currentSkill);
+        }
         if (currentHealth <= 0) Invoke(nameof(DestroyPlayer), 0.5f);
     }
     private void DestroyPlayer()
@@ -55,14 +60,13 @@ public class Player : MonoBehaviour
     public void TakeDamage(int damage)
     {
         currentHealth -= damage;
-        Debug.Log(currentHealth);
         healthBar.SetHealth(currentHealth);
     }
 
     public void IncreaseSkill(int skill)
     {
         currentSkill += skill;
-        //Debug.Log(currentSkill);
+        Debug.Log("Testt" + currentSkill);
         skillBar.SetSkill(currentSkill);
     }
 
