@@ -33,15 +33,15 @@ public class ControllerCharacter : MonoBehaviour
     //}
 
     public CharacterController controller;
-    public GameObject mainCam, shootingCam, aimingCamRight, aimingCamLeft, aimingCam;
-    public Text coreItemText, bulletCountText;
+    public GameObject mainCam, shootingCam, aimingCamRight, aimingCamLeft, aimingCam, ammoObject, alertObject;
+    public Text coreItemText, ammoText, spareAmmoText, alertText;
     public static bool ShootingMode = false;
     public static bool AimingMode = false;
     private bool isRight = true;
     public Transform cam;
     public float speed = 6f;
     private Animator animator = null;
-    private int bulletCount = 150;
+    //private int bulletCount = 150;
 
     public float gravity = 14f;
     public float turnSmoothTime = 0.1f;
@@ -50,8 +50,7 @@ public class ControllerCharacter : MonoBehaviour
     public float verticalV;
     public float aimDuration = 0.3f;
 
-    public int maxAmmo = 30;
-    private int currentAmmo = -1;
+    public int ammo, spareAmmo;
     public float reloadTime = 1f;
 
     public float sprintSpeed = 15f;
@@ -63,11 +62,13 @@ public class ControllerCharacter : MonoBehaviour
     public static int coreItems;
 
     public Inventory inventory;
-    int isAimingParam = Animator.StringToHash("isAiming");
+    //int isAimingParam = Animator.StringToHash("isAiming");
 
     void Start()
     {
-        //if(currentAmmo == -1) currentAmmo = maxAmmo;
+        Debug.Log(ammo);
+        spareAmmo = 150;
+        ammo = 30;
         animator = GetComponent<Animator>();
         cams = Camera.main;
         Cursor.visible = false;
@@ -77,8 +78,9 @@ public class ControllerCharacter : MonoBehaviour
 
     public void Reload()
     {
-        Debug.Log("Reloading..");
-        currentAmmo = maxAmmo;
+        ammoObject.SetActive(true);
+        alertObject.SetActive(false);
+        animator.SetBool("isReload", false);
     }
 
     // Update is called once per frame
@@ -87,13 +89,51 @@ public class ControllerCharacter : MonoBehaviour
         //Debug.Log(DialogueManager.dialogueActive == false && Player.IsAlive == true);
         //Debug.Log("Dialogue Active : " + DialogueManager.dialogueActive);
         //Debug.Log("Player Active : " + Player.IsAlive);
-        //if (currentAmmo <= 0)
-        //{
-        //    Reload();
-        //    return;
-        //}
+        if (ammo <= 0 && ShootingMode)
+        {
+            if (spareAmmo >= 30)
+            {
+                ammo += 30;
+                spareAmmo -= 30;
+                ammoObject.SetActive(false);
+                alertObject.SetActive(true);
+                alertText.text = "Reloading..";
+                animator.SetBool("isReload", true);
+                Invoke(nameof(Reload), 2f);
+            }
+            else
+            {
+                ammoObject.SetActive(false);
+                alertObject.SetActive(true);
+                alertText.text = "No Ammo";
+            }
+        }
+
+        if (Input.GetKeyDown(KeyCode.R))
+        {
+            int min = 30 - ammo;
+            if (spareAmmo >= min)
+            {
+                ammo += min;
+                spareAmmo -= min;
+                ammoObject.SetActive(false);
+                alertObject.SetActive(true);
+                alertText.text = "Reloading..";
+                animator.SetBool("isReload", true);
+                Invoke(nameof(Reload), 2f);
+            }
+            else
+            {
+                ammoObject.SetActive(false);
+                alertObject.SetActive(true);
+                alertText.text = "No Ammo";
+            }
+        }
+
         coreItemText.text = coreItems.ToString();
-        bulletCountText.text = bulletCount.ToString();
+        spareAmmoText.text = ammo.ToString();
+        ammoText.text = spareAmmo.ToString();
+
         if (DialogueManager.dialogueActive == false)
         {
             float horizontal = Input.GetAxisRaw("Horizontal");
@@ -138,10 +178,10 @@ public class ControllerCharacter : MonoBehaviour
 
             if (ShootingMode || AimingMode)
             {
-                if (Input.GetButtonDown("Fire1") && bulletCount > 0)
+                if (Input.GetButtonDown("Fire1") && ammo > 0)
                 {
-                    currentAmmo--;
-                    bulletCount--;
+                    ammo--;
+                    //bulletCount--;
                     SoundManager.PlaySound("ShotSFX");
                     weapon.StartFiring();
                 }

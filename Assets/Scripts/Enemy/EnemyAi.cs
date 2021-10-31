@@ -122,12 +122,12 @@ public class EnemyAi : MonoBehaviour
     private void Patroling()
     {
 
-        //Debug.Log(agent.name + " : " +  agent.remainingDistance);
+        Debug.Log(agent.name + " : " +  agent.remainingDistance);
+        //Debug.Log(start);
+        //Debug.Log(dest);
+        //Debug.Log(agent.name);
         if (agent.remainingDistance <= 0)
         {
-            Debug.Log(agent.name);
-            //Debug.Log(dest);
-
             dest = (dest == start) ? end : start;
         }
         transform.LookAt(dest);

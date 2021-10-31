@@ -7,7 +7,7 @@ public class Player : MonoBehaviour
     public int maxHealth = 1000;
     public int maxSkill = 200;
     public int currentHealth;
-    public static int currentSkill = 0;
+    public int currentSkill = 0;
     public HealthBar healthBar;
     public SkillBar skillBar;
     public static bool IsAlive = true;
@@ -41,7 +41,7 @@ public class Player : MonoBehaviour
             currentSkill++;
             skillBar.SetSkill(currentSkill);
         }
-        if (currentHealth <= 0) Invoke(nameof(DestroyPlayer), 0.5f);
+        if (currentHealth <= 0) Invoke(nameof(DestroyPlayer), 1f);
     }
     private void DestroyPlayer()
     {
