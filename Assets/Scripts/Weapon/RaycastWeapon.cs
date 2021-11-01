@@ -24,7 +24,7 @@ public class RaycastWeapon : MonoBehaviour
     public Transform raycastDestination;
     public GameObject magazine;
 
-    Player player;
+    public Player player;
     EnemyAi enemy;
     Ray ray;
     RaycastHit hitInfo;
@@ -99,9 +99,7 @@ public class RaycastWeapon : MonoBehaviour
                 enemy = hitInfo.collider.gameObject.GetComponent<EnemyAi>();
                 enemy.TakeDamage(10);
                 player.IncreaseSkill(2);
-                //Debug.Log(enemy.name);
             }
-            //Debug.Log(hitInfo.collider.gameObject.tag);
         }
         else
         {

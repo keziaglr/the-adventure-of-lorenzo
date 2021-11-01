@@ -24,7 +24,7 @@ public class Player : MonoBehaviour
     {
         currentHealth = maxHealth;
         healthBar.SetMaxHealth(maxHealth);
-        skillBar.SetSkill(currentSkill);
+        skillBar.SetMaxSkill(maxSkill);
     }
 
     // Update is called once per frame
@@ -41,6 +41,7 @@ public class Player : MonoBehaviour
             currentSkill++;
             skillBar.SetSkill(currentSkill);
         }
+
         if (currentHealth <= 0) Invoke(nameof(DestroyPlayer), 1f);
     }
     private void DestroyPlayer()
@@ -66,7 +67,12 @@ public class Player : MonoBehaviour
     public void IncreaseSkill(int skill)
     {
         currentSkill += skill;
-        Debug.Log("Testt" + currentSkill);
+        skillBar.SetSkill(currentSkill);
+    }
+
+    public void DecreaseSkill(int skill)
+    {
+        currentSkill -= skill;
         skillBar.SetSkill(currentSkill);
     }
 

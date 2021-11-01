@@ -36,7 +36,7 @@ public class EnemyAi : MonoBehaviour
     public int maxHealth = 250;
     public int currentHealth;
     public HealthBar healthBar;
-    public GameObject coreItem, respawnPoint, enemyObject;
+    public GameObject coreItem, respawnPoint, enemyObject, bloodUI;
 
 
     public ActiveWeapon.WeaponSlot weaponSlot;
@@ -66,7 +66,7 @@ public class EnemyAi : MonoBehaviour
         agent = GetComponent<NavMeshAgent>();
         currentHealth = maxHealth;
         healthBar.SetMaxHealth(maxHealth);
-        Debug.Log(agent.name);
+        //Debug.Log(agent.name);
         if (agent.name.Equals("Kyle"))
         {
             shot = 15;
@@ -122,7 +122,7 @@ public class EnemyAi : MonoBehaviour
     private void Patroling()
     {
 
-        Debug.Log(agent.name + " : " +  agent.remainingDistance);
+        //Debug.Log(agent.name + " : " +  agent.remainingDistance);
         //Debug.Log(start);
         //Debug.Log(dest);
         //Debug.Log(agent.name);
@@ -160,18 +160,35 @@ public class EnemyAi : MonoBehaviour
             if (hitInfo.transform != null && hitInfo.transform.tag.Equals("Player"))
             {
                 lorenzo = hitInfo.collider.gameObject.GetComponent<Player>();
-                lorenzo.TakeDamage(15);
+                int damage = 0;
+                if (agent.name.Equals("Kyle"))
+                {
+                    damage = 15;
+                } else if (agent.name.Equals("Warrior"))
+                {
+                    damage = 20;
+                } else if (agent.name.Equals("Drone"))
+                {
+                    damage = 10;
+                } else if (agent.name.Equals("Mech"))
+                {
+                    damage = 50;
+                }
+                bloodUI.SetActive(true);
+                lorenzo.TakeDamage(damage);
                 //Debug.Log("Player attacked");
 
             }
 
             alreadyAttacked = true;
+            
             Invoke(nameof(ResetAttack), timeBetweenAttacks);
         }
     }
 
     private void ResetAttack()
     {
+        bloodUI.SetActive(false);
         alreadyAttacked = false;
     }
 
@@ -179,9 +196,8 @@ public class EnemyAi : MonoBehaviour
     {
         currentHealth -= damage;
         healthBar.SetHealth(currentHealth);
-        //Debug.Log("Take damage");
 
-        if (currentHealth <= 0) {
+        if (currentHealth <= 0 && !agent.name.Equals("Mech")) {
             animator.SetBool("isDeath", true);
             Invoke(nameof(DestroyEnemy), 3f);
         }
@@ -189,7 +205,6 @@ public class EnemyAi : MonoBehaviour
     private void DestroyEnemy()
     {
         Vector3 pos = transform.position;
-        //coreItem.SetActive(true);
         Destroy(gameObject);
         //gen.cleanPatroliExist("Kyle", patrolIndex, 30);
         if (!coreItemActive)
@@ -229,7 +244,6 @@ public class EnemyAi : MonoBehaviour
     {
         isFiring = true;
         accumulatedTime = 0.0f;
-        //FireBullet();
     }
 
     public void UpdateBullets(float deltaTime)
@@ -261,8 +275,6 @@ public class EnemyAi : MonoBehaviour
         ray.direction = end - start;
         if (Physics.Raycast(ray, out hitInfo, distance))
         {
-            //Debug.Log(hitInfo.collider.gameObject.name);
-            //Debug.DrawLine(ray.origin, hitInfo.point, Color.red, 1.0f);
             hitEffect.transform.position = hitInfo.point;
             hitEffect.transform.forward = hitInfo.normal;
             hitEffect.Emit(1);
@@ -274,19 +286,13 @@ public class EnemyAi : MonoBehaviour
             {
                 enemy = hitInfo.collider.gameObject.GetComponent<EnemyAi>();
                 enemy.TakeDamage(10);
-                Debug.Log(enemy.name);
             }
-            //Debug.Log(hitInfo.collider.gameObject.tag);
 
             if(bullet.tracer != null)
             {
                 bullet.tracer.transform.position = end;
             }
         }
-        //else
-        //{
-            
-        //}
     }
 
     public void UpdateFiring(float deltaTime)
@@ -299,7 +305,6 @@ public class EnemyAi : MonoBehaviour
             accumulatedTime -= fireInterval;
         }
     }
-
     public void StopFiring()
     {
         isFiring = false;

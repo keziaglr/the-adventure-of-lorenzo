@@ -33,10 +33,11 @@ public class ControllerCharacter : MonoBehaviour
     //}
 
     public CharacterController controller;
-    public GameObject mainCam, shootingCam, aimingCamRight, aimingCamLeft, aimingCam, ammoObject, alertObject;
-    public Text coreItemText, ammoText, spareAmmoText, alertText;
+    public GameObject mainCam, shootingCam, shootingCamRight, shootingCamLeft, aimingCamRight, aimingCamLeft, aimingCam, ammoObject, alertObject, alertBottomObject;
+    public Text coreItemText, ammoText, spareAmmoText, alertText, alertBottomText;
     public static bool ShootingMode = false;
     public static bool AimingMode = false;
+    public static bool ReloadingMode = false;
     private bool isRight = true;
     public Transform cam;
     public float speed = 6f;
@@ -59,14 +60,14 @@ public class ControllerCharacter : MonoBehaviour
     Camera cams;
     RaycastWeapon weapon;
     public Rig aimLayer;
-    public static int coreItems;
+    public static int coreItems = 9;
 
     public Inventory inventory;
     //int isAimingParam = Animator.StringToHash("isAiming");
 
     void Start()
     {
-        Debug.Log(ammo);
+        //Debug.Log(ammo);
         spareAmmo = 150;
         ammo = 30;
         animator = GetComponent<Animator>();
@@ -80,6 +81,8 @@ public class ControllerCharacter : MonoBehaviour
     {
         ammoObject.SetActive(true);
         alertObject.SetActive(false);
+        alertBottomObject.SetActive(false);
+        ReloadingMode = false;
         animator.SetBool("isReload", false);
     }
 
@@ -97,7 +100,10 @@ public class ControllerCharacter : MonoBehaviour
                 spareAmmo -= 30;
                 ammoObject.SetActive(false);
                 alertObject.SetActive(true);
+                alertBottomObject.SetActive(true);
                 alertText.text = "Reloading..";
+                alertBottomText.text = "Reloading..";
+                ReloadingMode = true;
                 animator.SetBool("isReload", true);
                 Invoke(nameof(Reload), 2f);
             }
@@ -105,9 +111,13 @@ public class ControllerCharacter : MonoBehaviour
             {
                 ammoObject.SetActive(false);
                 alertObject.SetActive(true);
+                alertBottomObject.SetActive(true);
                 alertText.text = "No Ammo";
+                alertBottomText.text = "No Ammo";
             }
         }
+
+
 
         if (Input.GetKeyDown(KeyCode.R))
         {
@@ -118,7 +128,9 @@ public class ControllerCharacter : MonoBehaviour
                 spareAmmo -= min;
                 ammoObject.SetActive(false);
                 alertObject.SetActive(true);
+                alertBottomObject.SetActive(true);
                 alertText.text = "Reloading..";
+                alertBottomText.text = "Reloading..";
                 animator.SetBool("isReload", true);
                 Invoke(nameof(Reload), 2f);
             }
@@ -126,7 +138,9 @@ public class ControllerCharacter : MonoBehaviour
             {
                 ammoObject.SetActive(false);
                 alertObject.SetActive(true);
+                alertBottomObject.SetActive(true);
                 alertText.text = "No Ammo";
+                alertBottomText.text = "No Ammo";
             }
         }
 
@@ -140,8 +154,6 @@ public class ControllerCharacter : MonoBehaviour
             float vertical = Input.GetAxisRaw("Vertical");
             Vector3 direction = new Vector3(horizontal, 0f, vertical).normalized;
             Vector3 gravityVector = Vector3.zero;
-
-
 
             if (direction.magnitude >= 0.1f)
             {
@@ -178,21 +190,23 @@ public class ControllerCharacter : MonoBehaviour
 
             if (ShootingMode || AimingMode)
             {
-                if (Input.GetButtonDown("Fire1") && ammo > 0)
+                if (ReloadingMode == false)
                 {
-                    ammo--;
-                    //bulletCount--;
-                    SoundManager.PlaySound("ShotSFX");
-                    weapon.StartFiring();
-                }
-                if (weapon.isFiring)
-                {
-                    weapon.UpdateFiring(Time.deltaTime);
-                }
-                weapon.UpdateBullets(Time.deltaTime);
-                if (Input.GetButtonUp("Fire1"))
-                {
-                    weapon.StopFiring();
+                    if (Input.GetButtonDown("Fire1") && ammo > 0)
+                    {
+                        ammo--;
+                        SoundManager.PlaySound("ShotSFX");
+                        weapon.StartFiring();
+                    }
+                    if (weapon.isFiring)
+                    {
+                        weapon.UpdateFiring(Time.deltaTime);
+                    }
+                    weapon.UpdateBullets(Time.deltaTime);
+                    if (Input.GetButtonUp("Fire1"))
+                    {
+                        weapon.StopFiring();
+                    }
                 }
             }
 
@@ -211,6 +225,16 @@ public class ControllerCharacter : MonoBehaviour
                 {
                     mainCam.SetActive(false);
                     shootingCam.SetActive(true);
+                    if (isRight)
+                    {
+                        shootingCamRight.SetActive(true);
+                        shootingCamLeft.SetActive(false);
+                    }
+                    else
+                    {
+                        shootingCamLeft.SetActive(true);
+                        shootingCamRight.SetActive(false);
+                    }
                     ShootingMode = true;
                     StartCoroutine(Shoot());
                 }
@@ -220,8 +244,18 @@ public class ControllerCharacter : MonoBehaviour
             {
                 if (AimingMode)
                 {
-                    aimingCam.SetActive(false);
                     shootingCam.SetActive(true);
+                    if (isRight)
+                    {
+                        shootingCamRight.SetActive(true);
+                        shootingCamLeft.SetActive(false);
+                    }
+                    else
+                    {
+                        shootingCamLeft.SetActive(true);
+                        shootingCamRight.SetActive(false);
+                    }
+                    aimingCam.SetActive(false);
                     AimingMode = false;
                     ShootingMode = true;
                 }
@@ -248,7 +282,7 @@ public class ControllerCharacter : MonoBehaviour
             {
                 if (Input.GetKeyDown(KeyCode.Tab))
                 {
-                    Debug.Log("Tab & Right");
+                    //Debug.Log("Tab & Right");
                     if (isRight)
                     {
                         aimingCamRight.SetActive(false);
@@ -299,7 +333,7 @@ public class ControllerCharacter : MonoBehaviour
             if (item.name.Contains("CoreItem"))
             {
                 coreItems++;
-                Debug.Log(coreItems);
+                //Debug.Log(coreItems);
             }
             else
             {
