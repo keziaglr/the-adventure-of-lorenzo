@@ -61,12 +61,15 @@ public class EnemyAi : MonoBehaviour
 
     private void Start()
     {
-        animator.SetBool("isDeath", false);
+        if(agent.name.Equals("Kyle") || agent.name.Equals("Warrior"))
+        {
+            animator.SetBool("isDeath", false);
+        }
         player = GameObject.Find("Ken").transform;
         agent = GetComponent<NavMeshAgent>();
         currentHealth = maxHealth;
         healthBar.SetMaxHealth(maxHealth);
-        //Debug.Log(agent.name);
+
         if (agent.name.Equals("Kyle"))
         {
             shot = 15;
@@ -122,27 +125,17 @@ public class EnemyAi : MonoBehaviour
     private void Patroling()
     {
 
-        //Debug.Log(agent.name + " : " +  agent.remainingDistance);
-        //Debug.Log(start);
-        //Debug.Log(dest);
-        //Debug.Log(agent.name);
+        if(agent.name.Equals("Warrior")) Debug.Log(agent.name + " : " +  agent.remainingDistance);
         if (agent.remainingDistance <= 0)
         {
             dest = (dest == start) ? end : start;
         }
         transform.LookAt(dest);
         agent.SetDestination(dest);
-
-        //Vector3 distanceToWalkPoint = transform.position - walkPoint;
-
-        //if (distanceToWalkPoint.magnitude < 1f)
-        //    walkPointSet = false;
     }
 
     private void AttackPlayer()
     {
-        //agent.SetDestination(transform.position);
-
         transform.LookAt(player);
 
         if (!alreadyAttacked)
@@ -177,7 +170,6 @@ public class EnemyAi : MonoBehaviour
                 bloodUI.SetActive(true);
 
                 lorenzo.TakeDamage(damage);
-                //Debug.Log("Player attacked");
 
             }
 

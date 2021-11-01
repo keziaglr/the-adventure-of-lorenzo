@@ -105,12 +105,7 @@ public class Player : MonoBehaviour
 
     public void useHealthPotion()
     {
-        
-        if(currentHealth > maxHealth)
-        {
-            currentHealth = maxHealth;
-        }
-        healthBar.SetHealth(currentHealth);
+        IncreaseHealth(200);
     }
 
     public void useSkillPotion()
@@ -120,7 +115,7 @@ public class Player : MonoBehaviour
 
     public void useShield()
     {
-        IncreaseHealth(200);
+        
     }
 
     public IEnumerator usePainKiller()
