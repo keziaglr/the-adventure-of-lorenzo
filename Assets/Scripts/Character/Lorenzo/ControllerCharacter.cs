@@ -51,7 +51,7 @@ public class ControllerCharacter : MonoBehaviour
     public float verticalV;
     public float aimDuration = 0.3f;
 
-    public int ammo, spareAmmo;
+    public static int ammo, spareAmmo;
     public float reloadTime = 1f;
 
     public float sprintSpeed = 15f;
@@ -192,6 +192,7 @@ public class ControllerCharacter : MonoBehaviour
             {
                 if (ReloadingMode == false)
                 {
+                    //Debug.Log(ReloadingMode);
                     if (Input.GetButtonDown("Fire1") && ammo > 0)
                     {
                         ammo--;

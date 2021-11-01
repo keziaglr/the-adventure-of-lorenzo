@@ -91,11 +91,11 @@ public class Inventory : MonoBehaviour
             }
             else if (use.item.name.ToLower().Equals("painkiller"))
             {
-                player.usePainKiller();
+                StartCoroutine(player.usePainKiller());
             }
             else if (use.item.name.ToLower().Equals("damagemultiplier"))
             {
-                player.useDamageMultiplier();
+                StartCoroutine(player.useDamageMultiplier());
             }
             use.amount--;
             inventorySlotsUI[itemSlot].amount.text = use.amount.ToString();

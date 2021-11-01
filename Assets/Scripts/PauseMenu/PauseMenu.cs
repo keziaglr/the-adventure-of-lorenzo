@@ -1,15 +1,15 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 
 public class PauseMenu : MonoBehaviour
 {
     public static bool GameIsPaused = false;
     public static bool IsRestart = false;
-    
-
-    public GameObject pauseMenuUI, deathMenuUI, gameUI;
+    public GameObject pauseMenuUI, deathMenuUI, gameUI, victoryMenuUI;
+    public Text timerText;
 
     // Update is called once per frame
     void Update()
@@ -29,6 +29,10 @@ public class PauseMenu : MonoBehaviour
             }
         }
 
+        if (Input.GetKeyDown(KeyCode.L))
+        {
+            Victory();
+        }
     }
 
     public void Restart()
@@ -61,12 +65,21 @@ public class PauseMenu : MonoBehaviour
 
     public void Death()
     {
-        Debug.Log("Death");
+        gameUI.SetActive(false);
         deathMenuUI.SetActive(true);
     }
 
     public void MenuGame()
     {
         SceneManager.LoadScene(0);
+    }
+
+    public void Victory()
+    {
+        Cursor.visible = true;
+        Cursor.lockState = CursorLockMode.None;
+        timerText.text = Timer.timeNow;
+        victoryMenuUI.SetActive(true);
+        gameUI.SetActive(false);
     }
 }

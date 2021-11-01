@@ -97,7 +97,15 @@ public class RaycastWeapon : MonoBehaviour
             if (hitInfo.collider.gameObject.tag.Equals("Enemy") && hitInfo.transform != null)
             {
                 enemy = hitInfo.collider.gameObject.GetComponent<EnemyAi>();
-                enemy.TakeDamage(10);
+                if (Player.damageMultiplier)
+                {
+                    
+                    enemy.TakeDamage(10*2);
+                }
+                else
+                {
+                    enemy.TakeDamage(10);
+                }
                 player.IncreaseSkill(2);
             }
         }

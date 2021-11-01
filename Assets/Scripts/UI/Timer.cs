@@ -9,6 +9,7 @@ public class Timer : MonoBehaviour
     // Start is called before the first frame update
     private float currentTime;
     public Text timeText;
+    public static String timeNow;
 
     void Start()
     {
@@ -22,5 +23,6 @@ public class Timer : MonoBehaviour
 
         TimeSpan time = TimeSpan.FromSeconds(currentTime);
         timeText.text = time.ToString("mm\\:ss");
+        timeNow = time.ToString("mm\\:ss");
     }
 }

@@ -11,7 +11,8 @@ public class Player : MonoBehaviour
     public HealthBar healthBar;
     public SkillBar skillBar;
     public static bool IsAlive = true;
-    Inventory inventory;
+    public Inventory inventory;
+    public static bool damageMultiplier = false;
     PauseMenu pm;
     public GameObject deathMenuUI, gameUI, audioMain, audioDeath;
     
@@ -30,19 +31,28 @@ public class Player : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        //xAxis.Update(Time.fixedDeltaTime);
-        //yAxis.Update(Time.fixedDeltaTime);
-
-        //cameraLookAt.eulerAngles = new Vector3(yAxis.Value, xAxis.Value, 0);
-
-        //skillBar.SetSkill(currentSkill); 
-        if(Input.GetKeyDown(KeyCode.Space))
-        {
-            currentSkill++;
-            skillBar.SetSkill(currentSkill);
-        }
-
         if (currentHealth <= 0) Invoke(nameof(DestroyPlayer), 1f);
+
+        if (Input.GetKeyDown(KeyCode.Keypad1) || Input.GetKeyDown(KeyCode.Alpha1))
+        {
+            inventory.UseItem(1);
+        }else if(Input.GetKeyDown(KeyCode.Keypad2) || Input.GetKeyDown(KeyCode.Alpha2))
+        {
+            inventory.UseItem(2);
+        }
+        else if (Input.GetKeyDown(KeyCode.Keypad3) || Input.GetKeyDown(KeyCode.Alpha3))
+        {
+            inventory.UseItem(3);
+        }else if (Input.GetKeyDown(KeyCode.Keypad4) || Input.GetKeyDown(KeyCode.Alpha4))
+        {
+            inventory.UseItem(4);
+        }else if (Input.GetKeyDown(KeyCode.Keypad5) || Input.GetKeyDown(KeyCode.Alpha5))
+        {
+            inventory.UseItem(5);
+        }else if (Input.GetKeyDown(KeyCode.Keypad6) || Input.GetKeyDown(KeyCode.Alpha6))
+        {
+            inventory.UseItem(6);
+        }
     }
     private void DestroyPlayer()
     {
@@ -55,7 +65,6 @@ public class Player : MonoBehaviour
         ControllerCharacter.coreItems = 0;
         audioMain.SetActive(false);
         audioDeath.SetActive(true);
-        //pm.Death();
     }
 
     public void TakeDamage(int damage)
@@ -64,10 +73,23 @@ public class Player : MonoBehaviour
         healthBar.SetHealth(currentHealth);
     }
 
+    public void IncreaseHealth(int health)
+    {
+        currentHealth += health;
+        if (currentHealth > maxHealth)
+        {
+            currentHealth = maxHealth;
+        }
+        healthBar.SetHealth(currentHealth);
+    }
+
     public void IncreaseSkill(int skill)
     {
         currentSkill += skill;
-        skillBar.SetSkill(currentSkill);
+        if (currentSkill > maxSkill)
+        {
+            currentSkill = maxSkill;
+        }
     }
 
     public void DecreaseSkill(int skill)
@@ -78,31 +100,45 @@ public class Player : MonoBehaviour
 
     public void useAmmo()
     {
-
+        ControllerCharacter.spareAmmo += 30;
     }
 
     public void useHealthPotion()
     {
-        currentHealth += 200;
+        
+        if(currentHealth > maxHealth)
+        {
+            currentHealth = maxHealth;
+        }
+        healthBar.SetHealth(currentHealth);
     }
 
     public void useSkillPotion()
     {
-
+        IncreaseSkill(75);
     }
 
     public void useShield()
     {
-
+        IncreaseHealth(200);
     }
 
-    public void usePainKiller()
+    public IEnumerator usePainKiller()
     {
-
+        IncreaseHealth(450);
+        for(int i = 0; i <= 5; i++)
+        {
+            yield return new WaitForSeconds(1f);
+            TakeDamage(90);
+        }
     }
 
-    public void useDamageMultiplier()
+    public IEnumerator useDamageMultiplier()
     {
-
+        damageMultiplier = true;
+        yield return new WaitForSeconds(5f);
+        damageMultiplier = false;
     }
+
+
 }

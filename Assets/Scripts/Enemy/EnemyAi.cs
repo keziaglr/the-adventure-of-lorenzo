@@ -175,6 +175,7 @@ public class EnemyAi : MonoBehaviour
                     damage = 50;
                 }
                 bloodUI.SetActive(true);
+
                 lorenzo.TakeDamage(damage);
                 //Debug.Log("Player attacked");
 
@@ -199,7 +200,7 @@ public class EnemyAi : MonoBehaviour
 
         if (currentHealth <= 0 && !agent.name.Equals("Mech")) {
             animator.SetBool("isDeath", true);
-            Invoke(nameof(DestroyEnemy), 3f);
+            Invoke(nameof(DestroyEnemy), 3.5f);
         }
     }
     private void DestroyEnemy()
