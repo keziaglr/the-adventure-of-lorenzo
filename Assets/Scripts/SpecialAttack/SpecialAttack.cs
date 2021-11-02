@@ -211,6 +211,7 @@ public class SpecialAttack : MonoBehaviour
     }
     void PerformSpecialEffect()
     {
+        SoundManager.PlaySound("LightningSFX");
         if (vertex.Count > 0)
             vertex.Clear();
 

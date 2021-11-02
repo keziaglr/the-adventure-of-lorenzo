@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class SoundManager : MonoBehaviour
 {
-    public static AudioClip shot, door;
+    public static AudioClip shot, door, lightning;
     static AudioSource audioSrc;
 
     // Start is called before the first frame update
@@ -12,7 +12,7 @@ public class SoundManager : MonoBehaviour
     {
         shot = Resources.Load<AudioClip>("ShotSFX");
         door = Resources.Load<AudioClip>("DoorSFX");
-
+        lightning = Resources.Load<AudioClip>("LightningSFX");
         audioSrc = GetComponent<AudioSource>();
     }
 
@@ -31,6 +31,9 @@ public class SoundManager : MonoBehaviour
                 break;
             case "DoorSFX":
                 audioSrc.PlayOneShot(door);
+                break;
+            case "LightningSFX":
+                audioSrc.PlayOneShot(lightning);
                 break;
         }
     }

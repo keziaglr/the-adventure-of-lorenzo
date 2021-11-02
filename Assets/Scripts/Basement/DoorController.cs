@@ -5,10 +5,12 @@ using UnityEngine.UI;
 
 public class DoorController : MonoBehaviour
 {
-    public GameObject character;
+    public GameObject character, mainSound, basementSound, victorySound;
     private Animator animator;
     private List<Animator> childAnimatorList = new List<Animator>();
     public Text alertTxt;
+    public EnemyChase boss;
+    public DoorController doorCon;
 
     // Start is called before the first frame update
     private void Start()
@@ -24,22 +26,38 @@ public class DoorController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (Vector3.Distance(character.transform.position, transform.position) <= 1f && ControllerCharacter.coreItems >= 9)
+        if (Vector3.Distance(character.transform.position, transform.position) <= 1f)
         {
-            animator.SetBool("character_nearby", true);
-            foreach (Animator a in childAnimatorList)
+            if (doorCon.name.Equals("OpeningDoor") && ControllerCharacter.coreItems >= 9)
             {
-                a.SetBool("isOpening", true);
+                basementSound.SetActive(true);
+                mainSound.SetActive(false);
+                animator.SetBool("character_nearby", true);
+                foreach (Animator a in childAnimatorList)
+                {
+                    a.SetBool("isOpening", true);
+                }
+            }else if (doorCon.name.Equals("BossDoor")){
+                animator.SetBool("character_nearby", true);
+                foreach (Animator a in childAnimatorList)
+                {
+                    a.SetBool("isOpening", true);
+                }
+            }else if (doorCon.name.Equals("SpaceshipDoor") && EnemyChase.isDead)
+            {
+                basementSound.SetActive(false);
+                victorySound.SetActive(true);
+                animator.SetBool("character_nearby", true);
+                foreach (Animator a in childAnimatorList)
+                {
+                    a.SetBool("isOpening", true);
+                }
             }
         }
         else
         {
-            //if(ControllerCharacter.coreItems < 9)
-            //{
-            //    alertTxt.text = "Not Enough Core Items";
-            //}
             animator.SetBool("character_nearby", false);
-            SoundManager.PlaySound("DoorSFX");
+            
             foreach (Animator a in childAnimatorList)
             {
                 a.SetBool("isOpening", false);

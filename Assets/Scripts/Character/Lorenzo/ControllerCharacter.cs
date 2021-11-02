@@ -192,7 +192,6 @@ public class ControllerCharacter : MonoBehaviour
             {
                 if (ReloadingMode == false)
                 {
-                    //Debug.Log(ReloadingMode);
                     if (Input.GetButtonDown("Fire1") && ammo > 0)
                     {
                         ammo--;

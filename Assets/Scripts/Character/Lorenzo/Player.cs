@@ -14,7 +14,7 @@ public class Player : MonoBehaviour
     public Inventory inventory;
     public static bool damageMultiplier = false;
     PauseMenu pm;
-    public GameObject deathMenuUI, gameUI, audioMain, audioDeath;
+    public GameObject deathMenuUI, gameUI, audioMain, audioDeath, shieldSphere;
     
     //public Cinemachine.AxisState xAxis;
     //public Cinemachine.AxisState yAxis;
@@ -113,9 +113,12 @@ public class Player : MonoBehaviour
         IncreaseSkill(75);
     }
 
-    public void useShield()
+    public IEnumerator useShield()
     {
-        
+        Debug.Log("Use Shield");
+        shieldSphere.SetActive(true);
+        yield return new WaitForSeconds(7f);
+        shieldSphere.SetActive(false);
     }
 
     public IEnumerator usePainKiller()

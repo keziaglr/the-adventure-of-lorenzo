@@ -26,6 +26,7 @@ public class RaycastWeapon : MonoBehaviour
 
     public Player player;
     EnemyAi enemy;
+    EnemyChase boss;
     Ray ray;
     RaycastHit hitInfo;
     float accumulatedTime;
@@ -96,15 +97,31 @@ public class RaycastWeapon : MonoBehaviour
 
             if (hitInfo.collider.gameObject.tag.Equals("Enemy") && hitInfo.transform != null)
             {
-                enemy = hitInfo.collider.gameObject.GetComponent<EnemyAi>();
                 if (Player.damageMultiplier)
                 {
-                    
-                    enemy.TakeDamage(10*2);
+                    if (hitInfo.collider.gameObject.name.Equals("BOSS"))
+                    {
+                        boss = hitInfo.collider.gameObject.GetComponent<EnemyChase>();
+                        boss.TakeDamage(10 * 2);
+                    }
+                    else
+                    {
+                        enemy = hitInfo.collider.gameObject.GetComponent<EnemyAi>();
+                        enemy.TakeDamage(10*2);
+                    }
                 }
                 else
                 {
-                    enemy.TakeDamage(10);
+                    if (hitInfo.collider.gameObject.name.Equals("BOSS"))
+                    {
+                        boss = hitInfo.collider.gameObject.GetComponent<EnemyChase>();
+                        boss.TakeDamage(10);
+                    }
+                    else
+                    {
+                        enemy = hitInfo.collider.gameObject.GetComponent<EnemyAi>();
+                        enemy.TakeDamage(10);
+                    }
                 }
                 player.IncreaseSkill(2);
             }

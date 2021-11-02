@@ -87,7 +87,7 @@ public class Inventory : MonoBehaviour
             }
             else if (use.item.name.ToLower().Equals("shield"))
             {
-                player.useShield();
+                StartCoroutine(player.useShield());
             }
             else if (use.item.name.ToLower().Equals("painkiller"))
             {

@@ -125,7 +125,7 @@ public class EnemyAi : MonoBehaviour
     private void Patroling()
     {
 
-        if(agent.name.Equals("Warrior")) Debug.Log(agent.name + " : " +  agent.remainingDistance);
+        //if(agent.name.Equals("Warrior")) Debug.Log(agent.name + " : " +  agent.remainingDistance);
         if (agent.remainingDistance <= 0)
         {
             dest = (dest == start) ? end : start;
@@ -149,7 +149,7 @@ public class EnemyAi : MonoBehaviour
             bullets.Add(bullet);
             SoundManager.PlaySound("ShotSFX");
             currBullet--;
-
+            //Debug.Log(hitInfo.transform.tag);
             if (hitInfo.transform != null && hitInfo.transform.tag.Equals("Player"))
             {
                 lorenzo = hitInfo.collider.gameObject.GetComponent<Player>();
@@ -190,9 +190,13 @@ public class EnemyAi : MonoBehaviour
         currentHealth -= damage;
         healthBar.SetHealth(currentHealth);
 
-        if (currentHealth <= 0 && !agent.name.Equals("Mech")) {
-            animator.SetBool("isDeath", true);
-            Invoke(nameof(DestroyEnemy), 3.5f);
+        if (currentHealth <= 0) {
+            isDead = true;
+            if (!agent.name.Equals("Mech"))
+            {
+                animator.SetBool("isDeath", true);
+                Invoke(nameof(DestroyEnemy), 3.5f);
+            }
         }
     }
     private void DestroyEnemy()

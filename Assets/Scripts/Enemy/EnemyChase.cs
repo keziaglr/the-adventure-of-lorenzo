@@ -12,6 +12,7 @@ public class EnemyChase : MonoBehaviour
     public HealthBar healthBar;
     public int maxHealth = 250;
     public int currentHealth;
+    public static bool isDead = false;
 
     //Patroling
     public Vector3 walkPoint;
@@ -27,10 +28,17 @@ public class EnemyChase : MonoBehaviour
     public float sightRange, attackRange;
     public bool playerInSightRange, playerInAttackRange;
 
+    public Animator animator;
+
     private void Awake()
     {
         player = GameObject.Find("Ken").transform;
         agent = GetComponent<NavMeshAgent>();
+
+        animator.SetBool("isWalking", true);
+
+        currentHealth = maxHealth;
+        healthBar.SetMaxHealth(maxHealth);
     }
 
     private void Update()
@@ -59,7 +67,6 @@ public class EnemyChase : MonoBehaviour
     }
     private void SearchWalkPoint()
     {
-        //Calculate random point in range
         float randomZ = Random.Range(-walkPointRange, walkPointRange);
         float randomX = Random.Range(-walkPointRange, walkPointRange);
 
@@ -81,17 +88,15 @@ public class EnemyChase : MonoBehaviour
 
         transform.LookAt(player);
 
-        if (!alreadyAttacked)
-        {
-            ///Attack code here
-            Rigidbody rb = Instantiate(projectile, transform.position, Quaternion.identity).GetComponent<Rigidbody>();
-            rb.AddForce(transform.forward * 32f, ForceMode.Impulse);
-            rb.AddForce(transform.up * 8f, ForceMode.Impulse);
-            ///End of attack code
+        //if (!alreadyAttacked)
+        //{
+        //    Rigidbody rb = Instantiate(projectile, transform.position, Quaternion.identity).GetComponent<Rigidbody>();
+        //    rb.AddForce(transform.forward * 32f, ForceMode.Impulse);
+        //    rb.AddForce(transform.up * 8f, ForceMode.Impulse);
 
-            alreadyAttacked = true;
-            Invoke(nameof(ResetAttack), timeBetweenAttacks);
-        }
+        //    alreadyAttacked = true;
+        //    Invoke(nameof(ResetAttack), timeBetweenAttacks);
+        //}
     }
     private void ResetAttack()
     {
@@ -102,10 +107,16 @@ public class EnemyChase : MonoBehaviour
     {
         currentHealth -= damage;
         healthBar.SetHealth(currentHealth);
-        if (currentHealth <= 0) Invoke(nameof(DestroyEnemy), 0.5f);
+
+        if (currentHealth <= 0)
+        {
+            animator.SetBool("isDead", true);
+            Invoke(nameof(DestroyEnemy), 0.5f);
+        }
     }
     private void DestroyEnemy()
     {
+        isDead = true;
         Destroy(gameObject);
     }
 
