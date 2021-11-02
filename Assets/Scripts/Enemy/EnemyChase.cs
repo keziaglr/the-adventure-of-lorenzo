@@ -22,7 +22,7 @@ public class EnemyChase : MonoBehaviour
     //Attacking
     public float timeBetweenAttacks;
     bool alreadyAttacked;
-    public GameObject projectile;
+    public GameObject projectile, enemyObject;
 
     //States
     public float sightRange, attackRange;
@@ -118,6 +118,7 @@ public class EnemyChase : MonoBehaviour
     {
         isDead = true;
         Destroy(gameObject);
+        Destroy(enemyObject);
     }
 
     private void OnDrawGizmosSelected()

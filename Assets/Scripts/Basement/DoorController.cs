@@ -11,6 +11,7 @@ public class DoorController : MonoBehaviour
     public Text alertTxt;
     public EnemyChase boss;
     public DoorController doorCon;
+    public static bool victoryFlag = false;
 
     // Start is called before the first frame update
     private void Start()
@@ -43,8 +44,8 @@ public class DoorController : MonoBehaviour
                 {
                     a.SetBool("isOpening", true);
                 }
-            }else if (doorCon.name.Equals("SpaceshipDoor") && EnemyChase.isDead)
-            {
+            }else if (doorCon.name.Equals("SpaceshipDoor"))
+            { //&& EnemyChase.isDead
                 basementSound.SetActive(false);
                 victorySound.SetActive(true);
                 animator.SetBool("character_nearby", true);
@@ -52,6 +53,8 @@ public class DoorController : MonoBehaviour
                 {
                     a.SetBool("isOpening", true);
                 }
+
+                victoryFlag = true;
             }
         }
         else

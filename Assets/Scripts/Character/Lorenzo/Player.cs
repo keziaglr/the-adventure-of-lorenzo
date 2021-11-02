@@ -10,7 +10,7 @@ public class Player : MonoBehaviour
     public int currentSkill = 0;
     public HealthBar healthBar;
     public SkillBar skillBar;
-    public static bool IsAlive = true;
+    public static bool IsAlive = true, shieldActive = false;
     public Inventory inventory;
     public static bool damageMultiplier = false;
     PauseMenu pm;
@@ -115,9 +115,10 @@ public class Player : MonoBehaviour
 
     public IEnumerator useShield()
     {
-        Debug.Log("Use Shield");
         shieldSphere.SetActive(true);
+        shieldActive = true;
         yield return new WaitForSeconds(7f);
+        shieldActive = false;
         shieldSphere.SetActive(false);
     }
 

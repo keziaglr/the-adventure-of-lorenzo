@@ -149,8 +149,8 @@ public class EnemyAi : MonoBehaviour
             bullets.Add(bullet);
             SoundManager.PlaySound("ShotSFX");
             currBullet--;
-            //Debug.Log(hitInfo.transform.tag);
-            if (hitInfo.transform != null && hitInfo.transform.tag.Equals("Player"))
+            //if (hitInfo.transform != null) Debug.Log(hitInfo.transform.tag);
+            if (hitInfo.transform != null && hitInfo.transform.tag.Equals("Player") && !Player.shieldActive)
             {
                 lorenzo = hitInfo.collider.gameObject.GetComponent<Player>();
                 int damage = 0;

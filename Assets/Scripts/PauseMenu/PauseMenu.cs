@@ -10,11 +10,13 @@ public class PauseMenu : MonoBehaviour
     public static bool IsRestart = false;
     public GameObject pauseMenuUI, deathMenuUI, gameUI, victoryMenuUI;
     public Text timerText;
+    public GameObject player, viperCam, mainCam;
+    public Animator animator;
 
     // Update is called once per frame
     void Update()
     {
-        if(DialogueManager.dialogueActive == false)
+        if(DialogueManager.dialogueActive == false && DoorController.victoryFlag)
         {
             if (Input.GetKeyDown(KeyCode.Escape))
             {
@@ -29,10 +31,11 @@ public class PauseMenu : MonoBehaviour
             }
         }
 
-        if (Input.GetKeyDown(KeyCode.L))
+        if (DoorController.victoryFlag && Input.GetKeyDown(KeyCode.F))
         {
             Victory();
         }
+
     }
 
     public void Restart()
@@ -40,7 +43,6 @@ public class PauseMenu : MonoBehaviour
         Player.IsAlive = true;
         SceneManager.LoadScene(1);
         IsRestart = true;
-        //Debug.Log("Pause Menu " + IsRestart);
     }
 
     public void Resume()
@@ -78,6 +80,9 @@ public class PauseMenu : MonoBehaviour
     {
         Cursor.visible = true;
         Cursor.lockState = CursorLockMode.None;
+        animator.SetBool("isFlying", true);
+        viperCam.SetActive(true);
+        mainCam.SetActive(false);
         timerText.text = Timer.timeNow;
         victoryMenuUI.SetActive(true);
         gameUI.SetActive(false);
