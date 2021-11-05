@@ -921,8 +921,8 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 364601572440845594}
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 38.15247, y: -0.5831226, z: 42.939682}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 3149065946583183816}
@@ -947,9 +947,9 @@ Animator:
   m_Enabled: 1
   m_Avatar: {fileID: 9000000, guid: 860793eb3324391468f1c120a75ec049, type: 3}
   m_Controller: {fileID: 9100000, guid: 6defa2fea7e9a934a8d2cafa30dc567a, type: 2}
-  m_CullingMode: 1
+  m_CullingMode: 0
   m_UpdateMode: 0
-  m_ApplyRootMotion: 1
+  m_ApplyRootMotion: 0
   m_LinearVelocityBlending: 0
   m_WarningMessage: 
   m_HasTransformHierarchy: 1
@@ -975,14 +975,9 @@ MonoBehaviour:
   whatIsPlayer:
     serializedVersion: 2
     m_Bits: 64
-  points:
-  - {fileID: 0}
-  - {fileID: 0}
   tracerEffect: {fileID: 5909864596181481888, guid: bcd562018534a2c4cbf7870ec7e248c3, type: 3}
   bulletSpeed: 1000
-  walkPoint: {x: 0, y: 0, z: 0}
   timeBetweenAttacks: 0.5
-  projectile: {fileID: 1280041506531093527, guid: 5a869539844fd444abf7203b7cc82cf9, type: 3}
   sightRange: 5
   attackRange: 5
   playerInSightRange: 0
@@ -994,6 +989,13 @@ MonoBehaviour:
   coreItem: {fileID: 4802112038530493630, guid: 7c6ad928b72c4d64494ad45c41be5e6f, type: 3}
   respawnPoint: {fileID: 0}
   enemyObject: {fileID: 364601572440845594}
+  bloodUI: {fileID: 0}
+  canChasePlayer: 1
+  currentPatrolIndex: 0
+  inPosition: 0
+  attackEnemyFirstTime: 0
+  patrolArea: {fileID: 0}
+  patrolPoints: []
   weaponSlot: 0
   isFiring: 0
   fireRate: 25
@@ -1003,13 +1005,10 @@ MonoBehaviour:
   - {fileID: 0}
   hitEffect: {fileID: 3149065946282292008}
   raycastDestination: {fileID: 0}
-  patrolIndex: 1
+  patrolIndex: 0
   animator: {fileID: 364601572433583768}
   shot: 0
   currBullet: 0
-  dest: {x: 0, y: 0, z: 0}
-  start: {x: 0, y: 0, z: 0}
-  end: {x: 0, y: 0, z: 0}
 --- !u!195 &364601572440845591
 NavMeshAgent:
   m_ObjectHideFlags: 0
@@ -1026,7 +1025,7 @@ NavMeshAgent:
   m_AngularSpeed: 120
   m_StoppingDistance: 0
   m_AutoTraverseOffMeshLink: 1
-  m_AutoBraking: 1
+  m_AutoBraking: 0
   m_AutoRepath: 1
   m_Height: 2
   m_BaseOffset: 0
@@ -1043,13 +1042,13 @@ CharacterController:
   m_IsTrigger: 0
   m_Enabled: 1
   serializedVersion: 2
-  m_Height: 2.26
-  m_Radius: 0.5
-  m_SlopeLimit: 45
+  m_Height: 2
+  m_Radius: 0.4
+  m_SlopeLimit: 100
   m_StepOffset: 0.3
   m_SkinWidth: 0.08
   m_MinMoveDistance: 0.001
-  m_Center: {x: 0, y: 1, z: 0}
+  m_Center: {x: 0, y: 0.97, z: 0}
 --- !u!1 &364601572440845596
 GameObject:
   m_ObjectHideFlags: 0

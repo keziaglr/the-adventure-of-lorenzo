@@ -5,7 +5,7 @@ using UnityEngine.AI;
 
 public class GenerateEnemy : MonoBehaviour
 {
-    public class Enemy
+    public class EnemyGenerated
     {
         public GameObject enemy;
         public NavMeshAgent agent;
@@ -13,7 +13,7 @@ public class GenerateEnemy : MonoBehaviour
         public Transform patrolPos;
         public bool arrived;
 
-        public Enemy(GameObject e, NavMeshAgent a, int pI, Transform pP)
+        public EnemyGenerated(GameObject e, NavMeshAgent a, int pI, Transform pP)
         {
             enemy = e;
             agent = a;
@@ -31,7 +31,7 @@ public class GenerateEnemy : MonoBehaviour
         public GameObject enemyPrefabs;
         public Transform[] patrolPos;
         public Transform spawnPosition;
-        public List<Enemy> enemyList;
+        public List<EnemyGenerated> enemyList;
         public bool[] satpamExist;
     }
 
@@ -42,7 +42,7 @@ public class GenerateEnemy : MonoBehaviour
         foreach (Patroli p in patrolPositions)
         {
             p.satpamExist = new bool[p.patrolPos.Length];
-            p.enemyList = new List<Enemy>();
+            p.enemyList = new List<EnemyGenerated>();
         }
     }
 
@@ -58,7 +58,7 @@ public class GenerateEnemy : MonoBehaviour
 
     void updateEnemyArrival(Patroli p)
     {
-        foreach (Enemy e in p.enemyList)
+        foreach (EnemyGenerated e in p.enemyList)
         {
             if (e.enemy == null)
             {
@@ -72,12 +72,11 @@ public class GenerateEnemy : MonoBehaviour
                     if (Vector3.Distance(e.enemy.transform.position, e.patrolPos.position) < 0.5f)
                     {
                         e.arrived = true;
-                        e.agent.SetDestination(e.enemy.transform.position);
-                        //e.enemy.GetComponent<EnemyAi>().inPosition = true;
+                        //e.agent.SetDestination(e.enemy.transform.position);
+                        e.enemy.GetComponent<EnemyAi>().inPosition = true;
                     }
                     else
                     {
-                        //Debug.Log("Setting Destination");
                         e.agent.SetDestination(e.patrolPos.position);
                     }
                 }
@@ -90,11 +89,9 @@ public class GenerateEnemy : MonoBehaviour
     void generateEnemy(Patroli p)
     {
         for (int i = 0; i < p.satpamExist.Length; i++)
-        //for (int i = 0; i < 1; i++)
         {
             if (!p.satpamExist[i])
             {
-                //Debug.Log("Masuk Posisi Patrol " + i + " Kosong");
                 spawnEnemy(p, i);
                 p.satpamExist[i] = true;
             }
@@ -103,24 +100,19 @@ public class GenerateEnemy : MonoBehaviour
 
     void spawnEnemy(Patroli p, int patrolIndex)
     {
-        //Debug.Log("Spawn Enemy for patrolIndex " + patrolIndex);
         Transform destination = p.patrolPos[patrolIndex];
         GameObject enemy = Instantiate(p.enemyPrefabs, p.spawnPosition.position, Quaternion.identity);
         enemy.GetComponent<EnemyAi>().patrolIndex = patrolIndex;
+        enemy.GetComponent<EnemyAi>().patrolArea = destination;
         NavMeshAgent agent = enemy.GetComponent<NavMeshAgent>();
         for (int i = 0; i < destination.transform.childCount; i++)
         {
-            //enemy.GetComponent<EnemyAi>().patrolPoints.Add(destination.transform.GetChild(i));
-            enemy.GetComponent<EnemyAi>().start = destination.transform.GetChild(0).position;
-            enemy.GetComponent<EnemyAi>().end = destination.transform.GetChild(1).position;
+            enemy.GetComponent<EnemyAi>().patrolPoints.Add(destination.transform.GetChild(i));
         }
 
         agent.transform.LookAt(destination);
         agent.SetDestination(destination.position);
-        //Debug.Log("Current Enemy Position: " + enemy.transform.position);
-        //Debug.Log("Patrol Point: " + destination.position);
-        //Debug.Log("Agent Target: " + agent.destination);
-        p.enemyList.Add(new Enemy(enemy, agent, patrolIndex, destination));
+        p.enemyList.Add(new EnemyGenerated(enemy, agent, patrolIndex, destination));
     }
 
     Patroli findPatroli(string enemyType)
@@ -143,9 +135,7 @@ public class GenerateEnemy : MonoBehaviour
         Patroli p = findPatroli(enemyType);
         if (p != null)
         {
-            //Debug.Log("Start Delay for " + delay) ;
             yield return new WaitForSeconds(delay);
-            //Debug.Log("End Delay");
             p.satpamExist[patrolIndex] = false;
         }
         yield return null;

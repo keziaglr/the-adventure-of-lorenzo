@@ -7,22 +7,20 @@ public class Player : MonoBehaviour
     public int maxHealth = 1000;
     public int maxSkill = 200;
     public int currentHealth;
-    public int currentSkill = 0;
+    public static int currentSkill = 0;
     public HealthBar healthBar;
     public SkillBar skillBar;
     public static bool IsAlive = true, shieldActive = false;
     public Inventory inventory;
     public static bool damageMultiplier = false;
+    public GameObject bloodUI;
     PauseMenu pm;
     public GameObject deathMenuUI, gameUI, audioMain, audioDeath, shieldSphere;
     
-    //public Cinemachine.AxisState xAxis;
-    //public Cinemachine.AxisState yAxis;
-    //public Transform cameraLookAt;
-
     // Start is called before the first frame update
     void Start()
     {
+        currentSkill = maxSkill;
         currentHealth = maxHealth;
         healthBar.SetMaxHealth(maxHealth);
         skillBar.SetMaxSkill(maxSkill);
@@ -127,7 +125,7 @@ public class Player : MonoBehaviour
         IncreaseHealth(450);
         for(int i = 0; i <= 5; i++)
         {
-            yield return new WaitForSeconds(1f);
+            yield return new WaitForSeconds(1);
             TakeDamage(90);
         }
     }
@@ -137,6 +135,13 @@ public class Player : MonoBehaviour
         damageMultiplier = true;
         yield return new WaitForSeconds(5f);
         damageMultiplier = false;
+    }
+
+    public IEnumerator displayBlood()
+    {
+        bloodUI.SetActive(true);
+        yield return new WaitForSeconds(1f);
+        bloodUI.SetActive(false);
     }
 
 

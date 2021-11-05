@@ -19,17 +19,14 @@ public class EnemyAi : MonoBehaviour
 
     public LayerMask whatIsGround, whatIsPlayer;
 
-    public List<GameObject> points;
     public TrailRenderer tracerEffect;
 
     public float bulletSpeed = 1000.0f;
     List<Bullet> bullets = new List<Bullet>();
 
 
-    public Vector3 walkPoint;
     public float timeBetweenAttacks;
     bool alreadyAttacked;
-    public GameObject projectile;
     public float sightRange, attackRange;
     public bool playerInSightRange, playerInAttackRange;
     public Transform raycastOrigin;
@@ -38,6 +35,11 @@ public class EnemyAi : MonoBehaviour
     public HealthBar healthBar;
     public GameObject coreItem, respawnPoint, enemyObject, bloodUI;
 
+    public bool canChasePlayer;
+    public int currentPatrolIndex;
+    public bool inPosition, attackEnemyFirstTime;
+    public Transform patrolArea;
+    public List<Transform> patrolPoints;
 
     public ActiveWeapon.WeaponSlot weaponSlot;
     public bool isFiring = false;
@@ -50,6 +52,7 @@ public class EnemyAi : MonoBehaviour
     Player lorenzo;
     public Animator animator;
     public int shot = 0, currBullet = 0;
+    private int spawnDelay;
 
     private bool isDead = false, isReload = false, coreItemActive = false;
 
@@ -61,51 +64,50 @@ public class EnemyAi : MonoBehaviour
 
     private void Start()
     {
-        if(agent.name.Equals("Kyle") || agent.name.Equals("Warrior"))
+        initEnemyPatrolAttackChase();
+
+        if(name.ToLower().Contains("kyle") || name.ToLower().Contains("warrior"))
         {
             animator.SetBool("isDeath", false);
         }
+
         player = GameObject.Find("Ken").transform;
         agent = GetComponent<NavMeshAgent>();
         currentHealth = maxHealth;
         healthBar.SetMaxHealth(maxHealth);
 
-        if (agent.name.Equals("Kyle"))
+        if (name.ToLower().Contains("kyle"))
         {
+            canChasePlayer = false;
             shot = 15;
-        }else if (agent.name.Equals("Warrior"))
+            spawnDelay = 30;
+        }else if (name.ToLower().Contains("warrior"))
         {
+            canChasePlayer = true;
             shot = 20;
+            spawnDelay = 40;
         }
-        else if (agent.name.Equals("Drone"))
+        else if (name.ToLower().Contains("drone"))
         {
             shot = 30;
+            canChasePlayer = true;
+            spawnDelay = 50;
         }
-        else if (agent.name.Equals("Mech"))
+        else if (name.ToLower().Contains("mech"))
         {
+            canChasePlayer = false;
             shot = 20;
+            spawnDelay = 0;
         }
 
         currBullet = shot;
-        dest = start = points[0].transform.position;
-        end = points[1].transform.position;
+             
     }
 
     private void Update()
     {
-        playerInSightRange = Physics.CheckSphere(transform.position, sightRange, whatIsPlayer);
-        playerInAttackRange = Physics.CheckSphere(transform.position, attackRange, whatIsPlayer);
-        //Patroling();
-        if (!playerInSightRange && !playerInAttackRange && !isDead && !isReload)
-        {
-            Patroling();
-        }
-        if (playerInAttackRange && playerInSightRange && !isDead && !isReload)
-        {
-            AttackPlayer();
-        }
-
-        if(currBullet <= 0)
+        enemyRoutines();
+        if (currBullet <= 0)
         {
             animator.SetBool("isReload", true);
             currBullet += shot;
@@ -121,56 +123,99 @@ public class EnemyAi : MonoBehaviour
         isReload = false;
     }
 
-    public Vector3 dest, start, end;
+
     private void Patroling()
     {
+        transform.LookAt(patrolPoints[currentPatrolIndex].position);
+        agent.SetDestination(patrolPoints[currentPatrolIndex].position);
 
-        //if(agent.name.Equals("Warrior")) Debug.Log(agent.name + " : " +  agent.remainingDistance);
-        if (agent.remainingDistance <= 0)
+        float distanceToPatrolPoint = Vector3.Distance(transform.position, patrolPoints[currentPatrolIndex].position);
+
+        
+        if (distanceToPatrolPoint < 1f)
         {
-            dest = (dest == start) ? end : start;
+            currentPatrolIndex = (currentPatrolIndex + 1) % patrolPoints.Count;
         }
-        transform.LookAt(dest);
-        agent.SetDestination(dest);
+    }
+
+    private void initEnemyPatrolAttackChase()
+    {
+        currentPatrolIndex = 0;
+        inPosition = attackEnemyFirstTime = false;
+    }
+
+    private void enemyRoutines()
+    {
+
+        playerInSightRange = Physics.CheckSphere(transform.position, sightRange, whatIsPlayer);
+        playerInAttackRange = Physics.CheckSphere(transform.position, attackRange, whatIsPlayer);
+
+        if (inPosition && !playerInSightRange && !playerInAttackRange && !isDead && !isReload)
+        {
+            Patroling();
+        }
+
+        if (inPosition && playerInSightRange && !playerInAttackRange && canChasePlayer && !isDead)
+        {
+            ChasePlayer();
+        }
+
+        if (playerInAttackRange && playerInSightRange && !isDead && !isReload)
+        {
+            AttackPlayer();
+        }
+
+        if (!inPosition && attackEnemyFirstTime && !isDead)
+        {
+            ReachPatrolPosition();
+        }
+    }
+
+    private void ReachPatrolPosition()
+    {
+        transform.LookAt(patrolArea.position);
+        agent.SetDestination(patrolArea.position);
     }
 
     private void AttackPlayer()
     {
+        attackEnemyFirstTime = true;
         transform.LookAt(player);
+        agent.SetDestination(transform.position);
 
         if (!alreadyAttacked)
         {
-            //Rigidbody rb = Instantiate(projectile, transform.position, Quaternion.identity).GetComponent<Rigidbody>();
-            //rb.AddForce(transform.forward * 32f, ForceMode.Impulse);
-            //rb.AddForce(transform.up * 8f, ForceMode.Impulse);
-
             Vector3 velocity = (player.position - raycastOrigin.position).normalized * bulletSpeed;
             var bullet = CreateBullet(raycastOrigin.position, velocity);
             bullets.Add(bullet);
             SoundManager.PlaySound("ShotSFX");
             currBullet--;
-            //if (hitInfo.transform != null) Debug.Log(hitInfo.transform.tag);
             if (hitInfo.transform != null && hitInfo.transform.tag.Equals("Player") && !Player.shieldActive)
             {
                 lorenzo = hitInfo.collider.gameObject.GetComponent<Player>();
                 int damage = 0;
-                if (agent.name.Equals("Kyle"))
+                if (name.ToLower().Contains("kyle"))
                 {
                     damage = 15;
-                } else if (agent.name.Equals("Warrior"))
+                } else if (name.ToLower().Equals("warrior"))
                 {
                     damage = 20;
-                } else if (agent.name.Equals("Drone"))
+                } else if (name.ToLower().Equals("drone"))
                 {
                     damage = 10;
-                } else if (agent.name.Equals("Mech"))
+                } else if (name.ToLower().Equals("mech"))
                 {
                     damage = 50;
                 }
-                bloodUI.SetActive(true);
+                StartCoroutine(lorenzo.displayBlood());
 
                 lorenzo.TakeDamage(damage);
 
+            }
+
+            if(bullet.tracer != null)
+            {
+                bullet.tracer.transform.position = hitInfo.point;
             }
 
             alreadyAttacked = true;
@@ -179,9 +224,14 @@ public class EnemyAi : MonoBehaviour
         }
     }
 
+    private void ChasePlayer()
+    {
+        transform.LookAt(player.position);
+        agent.SetDestination(player.position);
+    }
+
     private void ResetAttack()
     {
-        bloodUI.SetActive(false);
         alreadyAttacked = false;
     }
 
@@ -201,23 +251,19 @@ public class EnemyAi : MonoBehaviour
     }
     private void DestroyEnemy()
     {
+        bool alreadyClean = false;
+        if (!alreadyClean)
+        {
+            alreadyClean = true;
+            FindObjectOfType<GenerateEnemy>().cleanPatroliExist(name, patrolIndex, spawnDelay);
+        }
         Vector3 pos = transform.position;
-        Destroy(gameObject);
-        //gen.cleanPatroliExist("Kyle", patrolIndex, 30);
+        Destroy(gameObject, 5f);
         if (!coreItemActive)
         {
             coreItemActive = true;
             Instantiate(coreItem, pos, Quaternion.identity);
         }
-        //Instantiate(enemyObject, respawnPoint.transform.position, Quaternion.identity);
-    }
-
-    private void OnDrawGizmosSelected()
-    {
-        Gizmos.color = Color.red;
-        Gizmos.DrawWireSphere(transform.position, attackRange);
-        Gizmos.color = Color.yellow;
-        Gizmos.DrawWireSphere(transform.position, sightRange);
     }
 
     Vector3 GetPosition(Bullet bullet)
@@ -279,12 +325,6 @@ public class EnemyAi : MonoBehaviour
             bullet.tracer.transform.position = hitInfo.point;
             bullet.time = maxLifetime;
 
-            if (hitInfo.collider.gameObject.tag.Equals("Enemy"))
-            {
-                enemy = hitInfo.collider.gameObject.GetComponent<EnemyAi>();
-                enemy.TakeDamage(10);
-            }
-
             if(bullet.tracer != null)
             {
                 bullet.tracer.transform.position = end;
@@ -298,7 +338,6 @@ public class EnemyAi : MonoBehaviour
         float fireInterval = 1.0f / fireRate;
         while (accumulatedTime >= 0.0f)
         {
-            //FireBullet();
             accumulatedTime -= fireInterval;
         }
     }

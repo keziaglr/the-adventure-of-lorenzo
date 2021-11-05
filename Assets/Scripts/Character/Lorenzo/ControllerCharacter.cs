@@ -60,7 +60,7 @@ public class ControllerCharacter : MonoBehaviour
     Camera cams;
     RaycastWeapon weapon;
     public Rig aimLayer;
-    public static int coreItems = 9;
+    public static int coreItems = 0;
 
     public Inventory inventory;
     //int isAimingParam = Animator.StringToHash("isAiming");

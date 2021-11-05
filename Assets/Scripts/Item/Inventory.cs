@@ -52,7 +52,6 @@ public class Inventory : MonoBehaviour
                 if (slots[i].item == null)
                 {
                     slots[i].item = item;
-                    //Debug.Log(item.name);
                 }
 
                 if (slots[i].item == item)
@@ -133,9 +132,7 @@ public class Inventory : MonoBehaviour
         {
             if (slots[i].item != null)
             {
-                //Debug.Log(slots[i].item.sprite);
                 inventorySlotsUI[i].img.sprite = slots[i].item.sprite;
-                //Debug.Log("Added " + inventorySlotsUI[i].img.sprite);
                 var color = inventorySlotsUI[i].img.color;
                 color.a = 1f;
                 inventorySlotsUI[i].img.color = color;

@@ -14,7 +14,7 @@ public class DialogueManager : MonoBehaviour
 
 	public Animator animator;
 
-	private Queue<string> sentences;
+	private Queue<string> sentences = new Queue<string>();
 
 	// Use this for initialization
 	void Start()
@@ -22,6 +22,7 @@ public class DialogueManager : MonoBehaviour
 		Cursor.visible = true;
 		Cursor.lockState = CursorLockMode.None;
 		sentences = new Queue<string>();
+
 	}
 
 	public void StartDialogue(Dialogue dialogue)
@@ -42,8 +43,9 @@ public class DialogueManager : MonoBehaviour
 
 			DisplayNextSentence();
         }
-        else
-        {
+        else if (PauseMenu.IsRestart)
+		{
+			Debug.Log("Game is restart");
 			GameInit();
         }
 	}
@@ -74,7 +76,7 @@ public class DialogueManager : MonoBehaviour
 	void EndDialogue()
 	{
 		animator.SetBool("IsOpen", false);
-		GameInit();
+		Invoke(nameof(GameInit), 2f);
 	}
 
 	void GameInit()
@@ -88,5 +90,7 @@ public class DialogueManager : MonoBehaviour
 		dialogueActive = false;
 		alertText.text = "";
 	}
+
+
 
 }

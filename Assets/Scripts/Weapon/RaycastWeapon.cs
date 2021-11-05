@@ -86,8 +86,6 @@ public class RaycastWeapon : MonoBehaviour
         ray.direction = end - start;
         if (Physics.Raycast(ray, out hitInfo, distance))
         {
-            //Debug.Log(hitInfo.collider.gameObject.name);
-            //Debug.DrawLine(ray.origin, hitInfo.point, Color.red, 1.0f);
             hitEffect.transform.position = hitInfo.point;
             hitEffect.transform.forward = hitInfo.normal;
             hitEffect.Emit(1);
@@ -95,19 +93,21 @@ public class RaycastWeapon : MonoBehaviour
             bullet.tracer.transform.position = hitInfo.point;
             bullet.time = maxLifetime;
 
-            if (hitInfo.collider.gameObject.tag.Equals("Enemy") && hitInfo.transform != null)
+            if (hitInfo.collider.gameObject.tag.Equals("Enemy") && hitInfo.transform != null && bullet.tracer != null)
             {
                 if (Player.damageMultiplier)
                 {
                     if (hitInfo.collider.gameObject.name.Equals("BOSS"))
                     {
                         boss = hitInfo.collider.gameObject.GetComponent<EnemyChase>();
+                        player.IncreaseSkill(2);
                         boss.TakeDamage(10 * 2);
                     }
                     else
                     {
                         enemy = hitInfo.collider.gameObject.GetComponent<EnemyAi>();
-                        enemy.TakeDamage(10*2);
+                        player.IncreaseSkill(2);
+                        enemy.TakeDamage(10 * 2);
                     }
                 }
                 else
@@ -115,15 +115,17 @@ public class RaycastWeapon : MonoBehaviour
                     if (hitInfo.collider.gameObject.name.Equals("BOSS"))
                     {
                         boss = hitInfo.collider.gameObject.GetComponent<EnemyChase>();
+                        player.IncreaseSkill(2);
                         boss.TakeDamage(10);
                     }
                     else
                     {
                         enemy = hitInfo.collider.gameObject.GetComponent<EnemyAi>();
+                        player.IncreaseSkill(2);
                         enemy.TakeDamage(10);
                     }
                 }
-                player.IncreaseSkill(2);
+                
             }
         }
         else
@@ -153,22 +155,6 @@ public class RaycastWeapon : MonoBehaviour
         Vector3 velocity = (raycastDestination.position - raycastOrigin.position).normalized * bulletSpeed;
         var bullet = CreateBullet(raycastOrigin.position, velocity);
         bullets.Add(bullet);
-
-        //ray.origin = raycastOrigin.position;
-        //ray.direction = raycastOrigin.forward;
-        ////ray.direction = raycastDestination.position - raycastOrigin.position;
-        //var tracer = Instantiate(tracerEffect, ray.origin, Quaternion.identity);
-        //tracer.AddPosition(ray.origin);
-        //if (Physics.Raycast(ray, out hitInfo))
-        //{
-        //    //Debug.Log(hitInfo.collider.gameObject.name);
-        //    //Debug.DrawLine(ray.origin, hitInfo.point, Color.red, 1.0f);
-        //    hitEffect.transform.position = hitInfo.point;
-        //    hitEffect.transform.forward = hitInfo.normal;
-        //    hitEffect.Emit(1);
-
-        //    tracer.transform.position = hitInfo.point;
-        //}
     }
 
     public void StopFiring()

@@ -8,15 +8,15 @@ public class PauseMenu : MonoBehaviour
 {
     public static bool GameIsPaused = false;
     public static bool IsRestart = false;
-    public GameObject pauseMenuUI, deathMenuUI, gameUI, victoryMenuUI;
-    public Text timerText;
+    public GameObject pauseMenuUI, deathMenuUI, gameUI, victoryMenuUI, alertObject;
+    public Text timerText, alertText;
     public GameObject player, viperCam, mainCam;
     public Animator animator;
 
     // Update is called once per frame
     void Update()
     {
-        if(DialogueManager.dialogueActive == false && DoorController.victoryFlag)
+        if(!DialogueManager.dialogueActive && !DoorController.victoryFlag)
         {
             if (Input.GetKeyDown(KeyCode.Escape))
             {
@@ -67,6 +67,8 @@ public class PauseMenu : MonoBehaviour
 
     public void Death()
     {
+        Cursor.visible = true;
+        Cursor.lockState = CursorLockMode.None;
         gameUI.SetActive(false);
         deathMenuUI.SetActive(true);
     }
@@ -86,5 +88,14 @@ public class PauseMenu : MonoBehaviour
         timerText.text = Timer.timeNow;
         victoryMenuUI.SetActive(true);
         gameUI.SetActive(false);
+    }
+
+    public IEnumerator setAlertText(string text)
+    {
+        alertObject.SetActive(true);
+        alertText.text = text;
+        yield return new WaitForSeconds(3f);
+        alertText.text = "";
+        alertObject.SetActive(false);
     }
 }

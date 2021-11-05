@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class SpecialAttack : MonoBehaviour
 {
@@ -12,7 +13,6 @@ public class SpecialAttack : MonoBehaviour
 
     public GameObject lightningEffect;
 
-    //public LineRenderer radiusLine;
     public LayerMask WhatIsEnemy;
     public int segments = 40;
     public float xradius = 10f;
@@ -20,105 +20,30 @@ public class SpecialAttack : MonoBehaviour
     public float radius = 10f;
     private bool checkEnemyInRange = false;
     public int electricDamage = 125;
+    public GameObject alertObj;
+    public Text alertTxt;
 
     private void Update()
     {
-        if (Input.GetKeyDown(KeyCode.Z))
+        if (Input.GetKeyDown(KeyCode.Z) && Player.currentSkill >= 75)
         {
             initSpecialEffect();
+        }else if(Input.GetKeyDown(KeyCode.Z) && Player.currentSkill < 75)
+        {
+            alertObj.SetActive(true);
+            alertTxt.text = "Not enough skill";
         }
     }
     void initSpecialEffect()
     {
         vertex = new List<GameObject>();
         PerformSpecialEffect();
-        //initRadius();
     }
 
-    //void initRadius()
-    //{
-    //    radiusLine.positionCount = segments + 1;
-    //    radiusLine.useWorldSpace = false;
-    //    CreatePoints();
-    //    radiusLine.gameObject.SetActive(false);
-    //}
-
-    //void CreatePoints()
-    //{
-    //    float x;
-    //    float y = 0f;
-    //    float z;
-
-    //    float angle = 20f;
-
-    //    for (int i = 0; i < (segments + 1); i++)
-    //    {
-    //        x = Mathf.Sin(Mathf.Deg2Rad * angle) * xradius;
-    //        z = Mathf.Cos(Mathf.Deg2Rad * angle) * yradius;
-
-    //        radiusLine.SetPosition(i, new Vector3(x, y, z));
-
-    //        angle += (360f / segments);
-    //    }
-    //}
-
-    //IEnumerator turnOnRadiusLine()
-    //{
-    //    checkEnemyInRange = true;
-    //    radiusLine.gameObject.SetActive(true);
-
-    //    yield return new WaitForSeconds(5);
-
-    //    radiusLine.gameObject.SetActive(false);
-    //    checkEnemyInRange = false;
-    //}
-
-    //IEnumerator SetBombUIEnemyInRadius(Vector3 center)
-    //{
-    //    float startTime = Time.time;
-    //    float timeElapsed = 0;
-    //    while (timeElapsed <= 5)
-    //    {
-    //        timeElapsed = Time.time - startTime;
-    //        hitColliders = null;
-    //        hitColliders = Physics.OverlapSphere(transform.position, radius, WhatIsEnemy);
-    //        V = hitColliders.Length;
-    //        if (prevHitColliders != null)
-    //        {
-    //            foreach (var phc in prevHitColliders)
-    //            {
-    //                bool flagExist = false;
-    //                foreach (var hc in hitColliders)
-    //                {
-    //                    if (phc.Equals(hc))
-    //                    {
-    //                        flagExist = true;
-    //                        break;
-    //                    }
-    //                }
-    //                if (!flagExist)
-    //                {
-    //                    phc.GetComponent<EnemyAi>().setInRange(false);
-    //                }
-    //            }
-    //        }
-    //        foreach (var h in hitColliders)
-    //        {
-    //            h.GetComponent<EnemyAi>().setInRange(true);
-    //        }
-
-    //        prevHitColliders = hitColliders;
-    //        yield return new WaitForSeconds(0);
-    //    }
-    //    foreach (var phc in prevHitColliders)
-    //    {
-    //        phc.GetComponent<EnemyAi>().setInRange(false);
-    //    }
-    //}
+   
 
     static int minKey(float[] key, bool[] mstSet)
     {
-        // Initialize min value
         float min = float.MaxValue;
         int min_index = -1;
 
