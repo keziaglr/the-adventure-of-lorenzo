@@ -118,7 +118,7 @@ public class EnemyChase : MonoBehaviour
     {
         isDead = true;
         Destroy(gameObject);
-        Destroy(enemyObject);
+        enemyObject.SetActive(false);
     }
 
     private void OnDrawGizmosSelected()

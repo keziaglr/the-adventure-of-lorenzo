@@ -89,9 +89,6 @@ public class ControllerCharacter : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        //Debug.Log(DialogueManager.dialogueActive == false && Player.IsAlive == true);
-        //Debug.Log("Dialogue Active : " + DialogueManager.dialogueActive);
-        //Debug.Log("Player Active : " + Player.IsAlive);
         if (ammo <= 0 && ShootingMode)
         {
             if (spareAmmo >= 30)

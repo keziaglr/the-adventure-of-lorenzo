@@ -93,7 +93,7 @@ public class RaycastWeapon : MonoBehaviour
             bullet.tracer.transform.position = hitInfo.point;
             bullet.time = maxLifetime;
 
-            if (hitInfo.collider.gameObject.tag.Equals("Enemy") && hitInfo.transform != null && bullet.tracer != null)
+            if (hitInfo.collider.gameObject.tag.Equals("Enemy") && hitInfo.transform != null)
             {
                 if (Player.damageMultiplier)
                 {

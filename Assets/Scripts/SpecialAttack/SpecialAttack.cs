@@ -18,10 +18,10 @@ public class SpecialAttack : MonoBehaviour
     public float xradius = 10f;
     public float yradius = 10f;
     public float radius = 10f;
-    private bool checkEnemyInRange = false;
     public int electricDamage = 125;
     public GameObject alertObj;
     public Text alertTxt;
+    public PauseMenu pm;
 
     private void Update()
     {
@@ -30,8 +30,7 @@ public class SpecialAttack : MonoBehaviour
             initSpecialEffect();
         }else if(Input.GetKeyDown(KeyCode.Z) && Player.currentSkill < 75)
         {
-            alertObj.SetActive(true);
-            alertTxt.text = "Not enough skill";
+            StartCoroutine(pm.setAlertText("Not Enough Skill"));
         }
     }
     void initSpecialEffect()

@@ -976,7 +976,7 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 64
   tracerEffect: {fileID: 5909864596181481888, guid: bcd562018534a2c4cbf7870ec7e248c3, type: 3}
-  bulletSpeed: 1000
+  bulletSpeed: 100
   timeBetweenAttacks: 0.5
   sightRange: 5
   attackRange: 5
@@ -1001,8 +1001,8 @@ MonoBehaviour:
   fireRate: 25
   bulletDrop: 5
   muzzleFlash:
-  - {fileID: 0}
-  - {fileID: 0}
+  - {fileID: 3149065945638646052}
+  - {fileID: 3149065947303038814}
   hitEffect: {fileID: 3149065946282292008}
   raycastDestination: {fileID: 0}
   patrolIndex: 0
@@ -31959,7 +31959,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 3149065947329268305}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 11931.3, y: 10019.8, z: 5849.5}
+  m_LocalPosition: {x: 11836.2, y: 9952.6, z: 5948.9}
   m_LocalScale: {x: 100, y: 100, z: 100}
   m_Children: []
   m_Father: {fileID: 364601572441010548}

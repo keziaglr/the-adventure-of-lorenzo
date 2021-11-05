@@ -101,7 +101,6 @@ public class EnemyAi : MonoBehaviour
         }
 
         currBullet = shot;
-             
     }
 
     private void Update()
@@ -122,7 +121,6 @@ public class EnemyAi : MonoBehaviour
         animator.SetBool("isReload", false);
         isReload = false;
     }
-
 
     private void Patroling()
     {
@@ -197,18 +195,19 @@ public class EnemyAi : MonoBehaviour
                 if (name.ToLower().Contains("kyle"))
                 {
                     damage = 15;
-                } else if (name.ToLower().Equals("warrior"))
+                } else if (name.ToLower().Contains("warrior"))
                 {
                     damage = 20;
-                } else if (name.ToLower().Equals("drone"))
+                } else if (name.ToLower().Contains("drone"))
                 {
                     damage = 10;
-                } else if (name.ToLower().Equals("mech"))
+                } else if (name.ToLower().Contains("mech"))
                 {
                     damage = 50;
                 }
                 StartCoroutine(lorenzo.displayBlood());
 
+                
                 lorenzo.TakeDamage(damage);
 
             }
@@ -242,7 +241,7 @@ public class EnemyAi : MonoBehaviour
 
         if (currentHealth <= 0) {
             isDead = true;
-            if (!agent.name.Equals("Mech"))
+            if (!name.ToLower().Contains("mech"))
             {
                 animator.SetBool("isDeath", true);
                 Invoke(nameof(DestroyEnemy), 3.5f);

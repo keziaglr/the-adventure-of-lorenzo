@@ -59,7 +59,7 @@ public class PauseMenu : MonoBehaviour
     {
         Cursor.visible = true;
         Cursor.lockState = CursorLockMode.None;
-        gameUI.SetActive(false);
+        //gameUI.SetActive(false);
         pauseMenuUI.SetActive(true);
         Time.timeScale = 0f;
         GameIsPaused = true;
@@ -88,6 +88,7 @@ public class PauseMenu : MonoBehaviour
         timerText.text = Timer.timeNow;
         victoryMenuUI.SetActive(true);
         gameUI.SetActive(false);
+        player.SetActive(false);
     }
 
     public IEnumerator setAlertText(string text)
